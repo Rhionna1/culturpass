@@ -1,5 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
+-- Users table: stores all registered CulturPass accounts including OAuth and email
 CREATE TABLE IF NOT EXISTS users (
                                      id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email         VARCHAR(255) UNIQUE NOT NULL,
@@ -15,6 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at    TIMESTAMPTZ DEFAULT NOW()
     );
 
+-- Locations table: stores venue and address details for events, including Google Maps coordinates
 CREATE TABLE IF NOT EXISTS locations (
                                          id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
@@ -28,6 +30,7 @@ CREATE TABLE IF NOT EXISTS locations (
     created_at      TIMESTAMPTZ DEFAULT NOW()
     );
 
+-- Events table: stores all events both user-created and pulled from Ticketmaster API
 CREATE TABLE IF NOT EXISTS events (
                                       id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title        VARCHAR(255) NOT NULL,
@@ -50,3 +53,12 @@ CREATE TABLE IF NOT EXISTS events (
     updated_at   TIMESTAMPTZ DEFAULT NOW()
     );
 
+-- RSVPs Table: tracks which users are attending which events, one record per user-event pair
+CREATE TABLE IF NOT EXISTS rsvps (
+                                     id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id    UUID NOT NULL REFERENCES users(id)  ON DELETE CASCADE,
+    event_id   UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    status     VARCHAR(50) DEFAULT 'going',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, event_id)
+    );
