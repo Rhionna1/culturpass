@@ -14,3 +14,16 @@ CREATE TABLE IF NOT EXISTS users (
     created_at    TIMESTAMPTZ DEFAULT NOW(),
     updated_at    TIMESTAMPTZ DEFAULT NOW()
     );
+
+CREATE TABLE IF NOT EXISTS locations (
+                                         id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name            VARCHAR(255) NOT NULL,
+    address         VARCHAR(500),
+    city            VARCHAR(100) NOT NULL,
+    state           VARCHAR(50)  NOT NULL,
+    zip_code        VARCHAR(10),
+    latitude        DECIMAL(10,8),
+    longitude       DECIMAL(11,8),
+    google_place_id VARCHAR(255),
+    created_at      TIMESTAMPTZ DEFAULT NOW()
+    );
