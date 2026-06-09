@@ -27,3 +27,26 @@ CREATE TABLE IF NOT EXISTS locations (
     google_place_id VARCHAR(255),
     created_at      TIMESTAMPTZ DEFAULT NOW()
     );
+
+CREATE TABLE IF NOT EXISTS events (
+                                      id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title        VARCHAR(255) NOT NULL,
+    description  TEXT,
+    category     VARCHAR(100) NOT NULL,
+    event_date   TIMESTAMPTZ NOT NULL,
+    end_date     TIMESTAMPTZ,
+    location_id  UUID REFERENCES locations(id) ON DELETE SET NULL,
+    organizer_id UUID REFERENCES users(id)     ON DELETE SET NULL,
+    image_url    VARCHAR(500),
+    external_id  VARCHAR(255),
+    source       VARCHAR(50)  DEFAULT 'user',
+    ticket_url   VARCHAR(500),
+    price_min    DECIMAL(10,2),
+    price_max    DECIMAL(10,2),
+    is_free      BOOLEAN      DEFAULT false,
+    capacity     INTEGER,
+    status       VARCHAR(50)  DEFAULT 'active',
+    created_at   TIMESTAMPTZ DEFAULT NOW(),
+    updated_at   TIMESTAMPTZ DEFAULT NOW()
+    );
+
