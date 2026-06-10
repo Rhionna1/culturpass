@@ -1,0 +1,36 @@
+package com.culturpass.backend.repository;
+
+import com.culturpass.backend.model.Event;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+// Provides database operations for the events table
+@Repository
+public interface EventRepository extends JpaRepository<Event, UUID> {
+
+    // Find all events in a specific category
+    List<Event> findByCategory(String category);
+
+    // Find all events by a specific organizer
+    List<Event> findByOrganizerId(UUID organizerId);
+
+    // Find all events at a specific location
+    List<Event> findByLocationId(UUID locationId);
+
+    // Find all events happening after a specific date
+    List<Event> findByEventDateAfter(LocalDateTime date);
+
+    // Find all events from an external source like Ticketmaster
+    List<Event> findBySource(String source);
+
+    // Find a specific Ticketmaster event by its external ID
+    Optional<Event> findByExternalId(String externalId);
+
+    // Find all active events in a category after a specific date
+    List<Event> findByCategoryAndStatusAndEventDateAfter(
+            String category, String status, LocalDateTime date);
+}
