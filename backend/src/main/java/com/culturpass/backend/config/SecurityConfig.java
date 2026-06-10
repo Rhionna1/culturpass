@@ -19,7 +19,9 @@ public class SecurityConfig {
                 // Allow all requests temporarily for development and testing
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
-                );
+                )
+                .httpBasic(basic -> basic.disable())
+                .formLogin(form -> form.disable());
 
         return http.build();
     }
