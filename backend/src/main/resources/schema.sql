@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS locations (
     city            VARCHAR(100) NOT NULL,
     state           VARCHAR(50)  NOT NULL,
     zip_code        VARCHAR(10),
-    latitude        DECIMAL(10,8),
-    longitude       DECIMAL(11,8),
+    latitude        FLOAT,
+    longitude       FLOAT,
     google_place_id VARCHAR(255),
     created_at      TIMESTAMPTZ DEFAULT NOW()
     );
