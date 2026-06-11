@@ -33,4 +33,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     // Find all active events in a category after a specific date
     List<Event> findByCategoryAndStatusAndEventDateAfter(
             String category, String status, LocalDateTime date);
+
+    // Find all events by status (active, pending, rejected)
+    List<Event> findByStatus(String status);
 }
