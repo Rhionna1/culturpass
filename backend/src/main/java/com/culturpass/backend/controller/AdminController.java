@@ -41,4 +41,14 @@ public class AdminController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // PUT /api/admin/events/{id}/feature — set an event as the featured hero event
+    @PutMapping("/events/{id}/feature")
+    public ResponseEntity<Event> setFeaturedEvent(@PathVariable UUID id) {
+        try {
+            return ResponseEntity.ok(eventService.setFeaturedEvent(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
