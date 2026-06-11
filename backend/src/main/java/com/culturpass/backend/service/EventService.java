@@ -81,4 +81,24 @@ public class EventService {
     public List<Event> getPendingEvents() {
         return eventRepository.findByStatus("pending");
     }
+
+    // Get the currently featured event for the hero section
+    public Optional<Event> getFeaturedEvent() {
+        return eventRepository.findByIsFeaturedTrue();
+    }
+
+    // Admin only — set an event as the featured hero event
+    public Event setFeaturedEvent(UUID id) {
+        // First unfeatured any currently featured event
+        eventRepository.findByIsFeaturedTrue().ifPresent(event -> {
+            event.setIsFeatured(false);
+            eventRepository.save(event);
+        });
+
+        // Then feature the new event
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        event.setIsFeatured(true);
+        return eventRepository.save(event);
+    }
 }
