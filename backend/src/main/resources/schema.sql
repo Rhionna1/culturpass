@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS events (
     is_free      BOOLEAN      DEFAULT false,
     capacity     INTEGER,
     status       VARCHAR(50)  DEFAULT 'active',
+    is_featured  BOOLEAN      DEFAULT false,
     created_at   TIMESTAMPTZ DEFAULT NOW(),
     updated_at   TIMESTAMPTZ DEFAULT NOW()
     );

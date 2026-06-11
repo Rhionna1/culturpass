@@ -36,4 +36,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     // Find all events by status (active, pending, rejected)
     List<Event> findByStatus(String status);
+
+    // Find the currently featured event for the hero section
+    Optional<Event> findByIsFeaturedTrue();
 }

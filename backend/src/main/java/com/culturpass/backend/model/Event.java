@@ -70,6 +70,11 @@ public class Event {
     @Builder.Default
     private String status = "active";
 
+    // Whether this event is featured in the hero section — admin only
+    @Builder.Default
+    @Column(name = "is_featured")
+    private Boolean isFeatured = false;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
