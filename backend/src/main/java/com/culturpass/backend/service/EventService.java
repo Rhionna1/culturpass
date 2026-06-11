@@ -16,9 +16,9 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
-    // Get all events
+    // Get all active events only — pending and rejected are hidden from public
     public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+        return eventRepository.findByStatus("active");
     }
 
     // Get a single event by its ID
