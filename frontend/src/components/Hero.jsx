@@ -73,7 +73,7 @@ const styles = {
     videoContainer: {
         position: 'relative',
         width: '100%',
-        height: '320px',
+        height: '520px',
         backgroundColor: '#2A1810',
         overflow: 'hidden',
         display: 'flex',
