@@ -60,4 +60,25 @@ public class EventService {
     public void deleteEvent(UUID id) {
         eventRepository.deleteById(id);
     }
+
+    // Admin only — approve an event
+    public Event approveEvent(UUID id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        event.setStatus("active");
+        return eventRepository.save(event);
+    }
+
+    // Admin only — reject an event
+    public Event rejectEvent(UUID id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        event.setStatus("rejected");
+        return eventRepository.save(event);
+    }
+
+    // Admin only — get all pending events awaiting approval
+    public List<Event> getPendingEvents() {
+        return eventRepository.findByStatus("pending");
+    }
 }
