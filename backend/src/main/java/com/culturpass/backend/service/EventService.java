@@ -48,8 +48,11 @@ public class EventService {
         return eventRepository.findByEventDateAfter(LocalDateTime.now());
     }
 
-    // Save a new event or update an existing one
+    // Save a new event — new events default to pending approval
     public Event saveEvent(Event event) {
+        if (event.getId() == null) {
+            event.setStatus("pending");
+        }
         return eventRepository.save(event);
     }
 
