@@ -16,6 +16,9 @@ const api = axios.create({
 // Get all events
 export const getAllEvents = () => api.get('/events');
 
+// Get the featured hero event
+export const getFeaturedEvent = () => api.get('/events/featured');
+
 // Get upcoming events only
 export const getUpcomingEvents = () => api.get('/events/upcoming');
 
