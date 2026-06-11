@@ -28,6 +28,14 @@ public class EventController {
         return ResponseEntity.ok(eventService.getUpcomingEvents());
     }
 
+    // GET /api/events/featured — get the featured hero event
+    @GetMapping("/featured")
+    public ResponseEntity<Event> getFeaturedEvent() {
+        return eventService.getFeaturedEvent()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     // GET /api/events/{id} — get a single event by ID
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable UUID id) {
