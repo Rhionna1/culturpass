@@ -42,6 +42,11 @@ public class User {
     @Column(name = "oauth_id")
     private String oauthId;
 
+    // User role — USER or ADMIN
+    @Column(nullable = false)
+    @Builder.Default
+    private String role = "USER";
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
