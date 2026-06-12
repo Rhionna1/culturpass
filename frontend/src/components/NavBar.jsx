@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import Logo from '../assets/Logo.jsx';
 
 // Navigation bar — appears on every page
-const NavBar = () => {
+const NavBar = ({ onAddEvent }) => {
     const location = useLocation();
 
     // Helper to check if a link is the current page
@@ -30,12 +30,12 @@ const NavBar = () => {
                 >
                     My Events
                 </Link>
-                <Link
-                    to="/submit-event"
+                <button
+                    onClick={onAddEvent}
                     style={styles.submitBtn}
                 >
                     + Add Event
-                </Link>
+                </button>
                 <Link
                     to="/signin"
                     style={isActive('/signin') ? styles.linkActive : styles.link}
