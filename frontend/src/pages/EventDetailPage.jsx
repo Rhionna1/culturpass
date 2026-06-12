@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getEventById } from '../services/api.js';
 
-// EventDetailPage — full details for a single event
 const EventDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -45,12 +44,10 @@ const EventDetailPage = () => {
     return (
         <div style={styles.page}>
 
-            {/* Back button */}
             <button style={styles.backBtn} onClick={() => navigate(-1)}>
                 ← Back
             </button>
 
-            {/* Event image */}
             <div style={{
                 ...styles.imageBanner,
                 backgroundColor: getCategoryColor(event.category),
@@ -59,37 +56,31 @@ const EventDetailPage = () => {
                     <img src={event.imageUrl} alt={event.title} style={styles.image} />
                 ) : (
                     <span style={styles.imageInitial}>
-            {event.category?.charAt(0).toUpperCase()}
-          </span>
+                        {event.category?.charAt(0).toUpperCase()}
+                    </span>
                 )}
             </div>
 
-            {/* Event content */}
             <div style={styles.content}>
 
-                {/* Category badge */}
                 <span style={styles.categoryBadge}>{event.category}</span>
 
-                {/* Title */}
                 <h1 style={styles.title}>{event.title}</h1>
 
-                {/* Date */}
                 <div style={styles.metaRow}>
                     <span style={styles.metaIcon}>📅</span>
                     <span style={styles.metaText}>{formatDate(event.eventDate)}</span>
                 </div>
 
-                {/* Location */}
                 {event.location && (
                     <div style={styles.metaRow}>
                         <span style={styles.metaIcon}>📍</span>
                         <span style={styles.metaText}>
-              {event.location.name} — {event.location.city}, {event.location.state}
-            </span>
+                            {event.location.name} — {event.location.city}, {event.location.state}
+                        </span>
                     </div>
                 )}
 
-                {/* Price */}
                 <div style={styles.metaRow}>
                     <span style={styles.metaIcon}>🎟️</span>
                     <span style={{
@@ -97,31 +88,23 @@ const EventDetailPage = () => {
                         color: event.isFree ? '#3B6D11' : '#D85A30',
                         fontWeight: '500',
                     }}>
-            {formatPrice(event)}
-          </span>
+                        {formatPrice(event)}
+                    </span>
                 </div>
 
-                {/* Divider */}
                 <div style={styles.divider} />
 
-                {/* Description */}
                 {event.description && (
                     <p style={styles.description}>{event.description}</p>
                 )}
 
-                {/* Action buttons */}
                 <div style={styles.buttons}>
                     <button style={styles.rsvpBtn}>RSVP Now</button>
                     {event.ticketUrl && (
-
-                        href={event.ticketUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={styles.ticketBtn}
-                        >
-                        Get Tickets ↗
+                        <a href={event.ticketUrl} target="_blank" rel="noopener noreferrer" style={styles.ticketBtn}>
+                            Get Tickets ↗
                         </a>
-                        )}
+                    )}
                 </div>
 
             </div>
