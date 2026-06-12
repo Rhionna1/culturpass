@@ -6,6 +6,7 @@ import SubmitEventModal from './components/SubmitEventModal.jsx';
 import HomePage from './pages/HomePage.jsx';
 import EventDetailPage from './pages/EventDetailPage.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
 
 // App — sets up routing, curtain animation, and event submission modal
 const App = () => {
@@ -25,7 +26,8 @@ const App = () => {
     };
 
     return (
-        <BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
             {showCurtain && (
                 <CurtainAnimation onComplete={handleCurtainComplete} />
             )}
@@ -38,7 +40,8 @@ const App = () => {
                 <Route path="/events/:id" element={<EventDetailPage />} />
                 <Route path="/admin" element={<AdminDashboard />} />
             </Routes>
-        </BrowserRouter>
+            </BrowserRouter>
+        </AuthProvider>
     );
 };
 
