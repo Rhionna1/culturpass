@@ -71,7 +71,7 @@ const getCategoryColor = (category) => {
         Culture: '#6B4F3A',
         Dance: '#993C1D',
         Film: '#1A0F0A',
-        Fashion: '#4A1F3A'
+        Fashion: '#4A1F3A',
         default: '#D85A30',
     };
     return colors[category] || colors.default;
@@ -89,7 +89,7 @@ const styles = {
     },
     imagePlaceholder: {
         width: '100%',
-        height: '140px',
+        height: '200px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

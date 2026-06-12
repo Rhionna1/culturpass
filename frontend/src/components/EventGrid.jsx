@@ -113,7 +113,7 @@ const styles = {
         color: '#F5EBE0',
     },
     grid: {
-        columns: '3',
+        columns: '4',
         columnGap: '16px',
     },
     loading: {
