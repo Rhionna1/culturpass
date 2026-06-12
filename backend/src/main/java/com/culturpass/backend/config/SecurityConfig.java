@@ -1,28 +1,51 @@
 package com.culturpass.backend.config;
 
+import com.culturpass.backend.security.JwtFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// Configures Spring Security for the application
+// Configures Spring Security with JWT authentication
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF for now — we will re-enable with JWT in Phase 2
                 .csrf(csrf -> csrf.disable())
-                // Allow all requests temporarily for development and testing
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Admin routes — ADMIN role only
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        // Auth routes — public
+                        .requestMatchers("/api/auth/**").permitAll()
+                        // Health check — public
+                        .requestMatchers("/api/health").permitAll()
+                        // Everything else — public for now
                         .anyRequest().permitAll()
                 )
                 .httpBasic(basic -> basic.disable())
-                .formLogin(form -> form.disable());
+                .formLogin(form -> form.disable())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    // Password encoder — uses BCrypt hashing
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
