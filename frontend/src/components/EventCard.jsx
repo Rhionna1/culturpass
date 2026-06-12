@@ -1,5 +1,8 @@
+import { useNavigate } from 'react-router-dom';
+
 // EventCard — displays a single event in the discovery grid
 const EventCard = ({ event }) => {
+    const navigate = useNavigate();
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             month: 'short',
@@ -20,7 +23,7 @@ const EventCard = ({ event }) => {
     const price = formatPrice(event);
 
     return (
-        <div style={styles.card}>
+        <div style={styles.card} onClick={() => navigate(`/events/${event.id}`)}>
 
             {/* Event image placeholder */}
             <div style={{
