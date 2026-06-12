@@ -101,4 +101,9 @@ public class EventService {
         event.setIsFeatured(true);
         return eventRepository.save(event);
     }
+
+    // Search events by keyword
+    public List<Event> searchEvents(String keyword) {
+        return eventRepository.searchByKeyword(keyword);
+    }
 }
