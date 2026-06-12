@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 // Provides database operations for the events table
 @Repository
@@ -39,4 +41,10 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     // Find the currently featured event for the hero section
     Optional<Event> findByIsFeaturedTrue();
+
+    // Search events by title or description containing a keyword
+    @Query("SELECT e FROM Event e WHERE e.status = 'active' AND " +
+            "(LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(e.description) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    List<Event> searchByKeyword(@Param("keyword") String keyword);
 }
