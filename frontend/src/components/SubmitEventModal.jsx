@@ -29,7 +29,25 @@ const SubmitEventModal = ({ onClose }) => {
         setForm(prev => ({ ...prev, [field]: value }));
     };
 
-    const next = () => setStep(prev => Math.min(prev + 1, TOTAL_STEPS));
+    const isStepValid = () => {
+        switch (step) {
+            case 1: return form.title.trim() !== '';
+            case 2: return form.category !== '';
+            case 3: return form.description.trim() !== '';
+            case 4: return form.eventDate !== '';
+            case 5: return form.venueName.trim() !== '' && form.address.trim() !== '' && form.city.trim() !== '';
+            case 6: return form.ticketUrl.trim() !== '';
+            case 7: return form.isFree || (form.priceMin !== '' && form.priceMax !== '');
+            case 8: return form.imageUrl.trim() !== '';
+            default: return true;
+        }
+    };
+
+    const next = () => {
+        if (isStepValid()) {
+            setStep(prev => Math.min(prev + 1, TOTAL_STEPS));
+        }
+    };
     const back = () => setStep(prev => Math.max(prev - 1, 1));
 
     const handleSubmit = () => {
@@ -300,7 +318,16 @@ const SubmitEventModal = ({ onClose }) => {
                                 <button style={styles.backBtn} onClick={back}>← Back</button>
                             )}
                             {step < TOTAL_STEPS ? (
-                                <button style={styles.nextBtn} onClick={next}>Next →</button>
+                                <button
+                                    style={{
+                                        ...styles.nextBtn,
+                                        opacity: isStepValid() ? 1 : 0.4,
+                                        cursor: isStepValid() ? 'pointer' : 'not-allowed',
+                                    }}
+                                    onClick={next}
+                                >
+                                    Next →
+                                </button>
                             ) : (
                                 <button
                                     style={styles.submitBtn}
