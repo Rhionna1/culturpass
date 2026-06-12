@@ -4,6 +4,7 @@ import NavBar from './components/NavBar.jsx';
 import CurtainAnimation from './components/CurtainAnimation.jsx';
 import SubmitEventModal from './components/SubmitEventModal.jsx';
 import HomePage from './pages/HomePage.jsx';
+import EventDetailPage from './pages/EventDetailPage.jsx';
 
 // App — sets up routing, curtain animation, and event submission modal
 const App = () => {
@@ -33,6 +34,7 @@ const App = () => {
             )}
             <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/events/:id" element={<EventDetailPage />} />
             </Routes>
         </BrowserRouter>
     );
