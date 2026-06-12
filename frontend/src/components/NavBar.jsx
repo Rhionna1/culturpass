@@ -1,47 +1,69 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../assets/Logo.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 // Navigation bar — appears on every page
 const NavBar = ({ onAddEvent }) => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { isLoggedIn, isAdmin, user, logout } = useAuth();
 
-    // Helper to check if a link is the current page
     const isActive = (path) => location.pathname === path;
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
 
     return (
         <nav style={styles.nav}>
 
-            {/* Logo — clicking it goes to homepage */}
             <Link to="/" style={styles.logoLink}>
                 <Logo size={36} />
             </Link>
 
-            {/* Navigation links */}
             <div style={styles.links}>
-                <Link
-                    to="/"
-                    style={isActive('/') ? styles.linkActive : styles.link}
-                >
+                <Link to="/" style={isActive('/') ? styles.linkActive : styles.link}>
                     Discover
                 </Link>
-                <Link
-                    to="/my-events"
-                    style={isActive('/my-events') ? styles.linkActive : styles.link}
-                >
-                    My Events
-                </Link>
-                <button
-                    onClick={onAddEvent}
-                    style={styles.submitBtn}
-                >
+
+                {isLoggedIn() && (
+                    <Link
+                        to="/my-events"
+                        style={isActive('/my-events') ? styles.linkActive : styles.link}
+                    >
+                        My Events
+                    </Link>
+                )}
+
+                {isAdmin() && (
+                    <Link
+                        to="/admin"
+                        style={isActive('/admin') ? styles.linkActive : styles.link}
+                    >
+                        Admin
+                    </Link>
+                )}
+
+                <button onClick={onAddEvent} style={styles.submitBtn}>
                     + Add Event
                 </button>
-                <Link
-                    to="/signin"
-                    style={isActive('/signin') ? styles.linkActive : styles.link}
-                >
-                    Sign In
-                </Link>
+
+                {isLoggedIn() ? (
+                    <div style={styles.userRow}>
+                        <span style={styles.userName}>{user?.email?.split('@')[0]}</span>
+                        <button onClick={handleLogout} style={styles.logoutBtn}>
+                            Sign out
+                        </button>
+                    </div>
+                ) : (
+                    <Link
+                        to="/signin"
+                        style={isActive('/signin') ? styles.linkActive : styles.link}
+                    >
+                        Sign In
+                    </Link>
+                )}
             </div>
 
         </nav>
@@ -74,7 +96,6 @@ const styles = {
         fontSize: '13px',
         letterSpacing: '0.04em',
         textDecoration: 'none',
-        transition: 'opacity 0.2s',
     },
     linkActive: {
         color: '#F0A882',
@@ -91,7 +112,28 @@ const styles = {
         letterSpacing: '0.04em',
         padding: '8px 16px',
         borderRadius: '6px',
-        textDecoration: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+    },
+    userRow: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '14px',
+    },
+    userName: {
+        fontSize: '13px',
+        color: '#F0A882',
+    },
+    logoutBtn: {
+        background: 'transparent',
+        border: '0.5px solid rgba(245,235,224,0.3)',
+        borderRadius: '6px',
+        padding: '6px 12px',
+        fontSize: '12px',
+        color: '#F5EBE0',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
     },
 };
 
