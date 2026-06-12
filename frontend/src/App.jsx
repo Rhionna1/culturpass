@@ -8,6 +8,7 @@ import EventDetailPage from './pages/EventDetailPage.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 
 // App — sets up routing, curtain animation, and event submission modal
@@ -40,7 +41,11 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/events/:id" element={<EventDetailPage />} />
-                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin" element={
+                    <ProtectedRoute requireAdmin={true}>
+                        <AdminDashboard />
+                    </ProtectedRoute>
+                } />
                 <Route path="/signin" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
             </Routes>
