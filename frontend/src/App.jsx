@@ -6,6 +6,8 @@ import SubmitEventModal from './components/SubmitEventModal.jsx';
 import HomePage from './pages/HomePage.jsx';
 import EventDetailPage from './pages/EventDetailPage.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import RegisterPage from './pages/RegisterPage.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 
 // App — sets up routing, curtain animation, and event submission modal
@@ -39,6 +41,8 @@ const App = () => {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/events/:id" element={<EventDetailPage />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/signin" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
             </Routes>
             </BrowserRouter>
         </AuthProvider>
