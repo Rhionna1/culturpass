@@ -36,6 +36,12 @@ public class EventController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // GET /api/events/search?keyword=jazz — search events by keyword
+    @GetMapping("/search")
+    public ResponseEntity<List<Event>> searchEvents(@RequestParam String keyword) {
+        return ResponseEntity.ok(eventService.searchEvents(keyword));
+    }
+
     // GET /api/events/{id} — get a single event by ID
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable UUID id) {
