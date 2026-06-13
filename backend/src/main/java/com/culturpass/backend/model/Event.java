@@ -55,6 +55,10 @@ public class Event {
     @Column(name = "ticket_url")
     private String ticketUrl;
 
+    // Optional deadline for purchasing tickets
+    @Column(name = "ticket_deadline")
+    private LocalDateTime ticketDeadline;
+
     @Column(name = "price_min")
     private BigDecimal priceMin;
 

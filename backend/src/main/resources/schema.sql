@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS events (
     external_id  VARCHAR(255),
     source       VARCHAR(50)  DEFAULT 'user',
     ticket_url   VARCHAR(500),
+    ticket_deadline TIMESTAMPTZ,
     price_min    DECIMAL(10,2),
     price_max    DECIMAL(10,2),
     is_free      BOOLEAN      DEFAULT false,
