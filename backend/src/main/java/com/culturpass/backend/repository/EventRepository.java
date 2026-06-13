@@ -50,4 +50,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     // Find all active events happening after a specific date
     List<Event> findByStatusAndEventDateAfter(String status, LocalDateTime date);
+
+    // Find all events by status and event type — used for Happy Hour permanent listings
+    List<Event> findByStatusAndEventType(String status, String eventType);
 }

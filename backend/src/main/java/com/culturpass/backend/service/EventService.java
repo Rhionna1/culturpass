@@ -17,9 +17,12 @@ public class EventService {
     private final EventRepository eventRepository;
 
     // Get all active events only — pending and rejected are hidden from public
-    // Get all active upcoming events only — past, pending and rejected are hidden from public
+    // Get all active upcoming events plus permanent Happy Hour listings
     public List<Event> getAllEvents() {
-        return eventRepository.findByStatusAndEventDateAfter("active", LocalDateTime.now());
+        List<Event> upcomingEvents = eventRepository.findByStatusAndEventDateAfter("active", LocalDateTime.now());
+        List<Event> happyHours = eventRepository.findByStatusAndEventType("active", "happyhour");
+        upcomingEvents.addAll(happyHours);
+        return upcomingEvents;
     }
 
     // Get a single event by its ID
