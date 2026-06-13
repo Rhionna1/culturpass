@@ -95,6 +95,15 @@ const MyEventsPage = () => {
                     {event.eventType === 'happyhour' && (
                         <span style={styles.happyHourBadge}>🍸</span>
                     )}
+                    {showUnsave && (
+                        <span
+                            style={styles.unsaveBtn}
+                            onClick={e => handleUnsave(e, event.id)}
+                            title="Remove from saved"
+                        >
+                        ♥
+                    </span>
+                    )}
                 </div>
                 <p style={styles.cardTitle}>{event.title}</p>
                 <p style={styles.cardDate}>
