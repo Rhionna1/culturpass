@@ -58,6 +58,20 @@ export const cancelRsvp = (userId, eventId) =>
 // Get all RSVPs for a user
 export const getUserRsvps = (userId) => api.get(`/rsvps/user/${userId}`);
 
+// ── Saved event calls ────────────────────────────────────
+
+// Get all saved events for a user
+export const getSavedEvents = (userId) => api.get(`/saved/user/${userId}`);
+
+// Check if an event is saved by a user
+export const isEventSaved = (userId, eventId) => api.get(`/saved/check/${userId}/${eventId}`);
+
+// Save an event
+export const saveEvent = (userId, eventId) => api.post(`/saved/${userId}/${eventId}`);
+
+// Unsave an event
+export const unsaveEvent = (userId, eventId) => api.delete(`/saved/${userId}/${eventId}`);
+
 // ── Health check ─────────────────────────────────────────
 
 export const checkHealth = () => api.get('/health');
