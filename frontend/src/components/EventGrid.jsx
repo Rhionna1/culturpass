@@ -5,7 +5,11 @@ import { getUpcomingEvents, getUpcomingEventsByCategory } from '../services/api.
 import api from '../services/api.js';
 
 // Categories available for filtering events
-const CATEGORIES = ['All', 'Music', 'Art', 'Food', 'Fashion', 'Culture', 'Dance', 'Film'];
+const CATEGORIES = [
+    'All', 'Art', 'Culture', 'Dance', 'Drink', 'Family',
+    'Fashion', 'Film', 'Fitness', 'Food', 'LGBTQIA+',
+    'Music', 'Religious', 'Smoke Friendly'
+];
 
 // EventGrid — Pinterest-style discovery grid with category filters and search
 const EventGrid = () => {

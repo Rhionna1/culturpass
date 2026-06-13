@@ -68,13 +68,19 @@ const EventCard = ({ event }) => {
 // Assigns a color to each category for the image placeholder
 const getCategoryColor = (category) => {
     const colors = {
-        Music: '#2A1810',
         Art: '#BA7517',
-        Food: '#3D2B1F',
         Culture: '#6B4F3A',
         Dance: '#993C1D',
-        Film: '#1A0F0A',
+        Drink: '#1A3A2A',
+        Family: '#2A4A6B',
         Fashion: '#4A1F3A',
+        Film: '#1A0F0A',
+        Fitness: '#1A3A1A',
+        Food: '#3D2B1F',
+        'LGBTQIA+': '#6B1A3A',
+        Music: '#2A1810',
+        Religious: '#3A3A1A',
+        'Smoke Friendly': '#2A3A1A',
         default: '#D85A30',
     };
     return colors[category] || colors.default;

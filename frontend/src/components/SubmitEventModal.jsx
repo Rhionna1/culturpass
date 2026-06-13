@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { createEvent } from '../services/api.js';
 
-const CATEGORIES = ['Music', 'Art', 'Food', 'Fashion', 'Culture', 'Dance', 'Film'];
+const CATEGORIES = [
+    'Art', 'Culture', 'Dance', 'Drink', 'Family',
+    'Fashion', 'Film', 'Fitness', 'Food', 'LGBTQIA+',
+    'Music', 'Religious', 'Smoke Friendly'
+];
 
 const TOTAL_STEPS = 9;
 
