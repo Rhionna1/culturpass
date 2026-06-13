@@ -37,7 +37,8 @@ const LoginPage = () => {
             <div style={styles.card}>
 
                 <h1 style={styles.title}>Welcome back</h1>
-                <p style={styles.subtitle}>Sign in to your CulturPass account</p>
+                {/* Subtitle — updated to FunctionPass brand name */}
+                <p style={styles.subtitle}>Sign in to your FunctionPass account</p>
 
                 {error && <p style={styles.error}>{error}</p>}
 
