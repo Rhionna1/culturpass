@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import api from '../services/api.js';
-import { getSavedEvents } from '../services/api.js';
+import { getSavedEvents, unsaveEvent } from '../services/api.js';
 
 // MyEventsPage — shows submitted and saved events for the logged in user
 const MyEventsPage = () => {
@@ -61,7 +61,17 @@ const MyEventsPage = () => {
         return colors[category] || colors.default;
     };
 
-    const renderEventCard = (event, showStatus = false) => (
+    const handleUnsave = (e, eventId) => {
+        e.stopPropagation();
+        if (!user?.id) return;
+        unsaveEvent(user.id, eventId)
+            .then(() => {
+                setSavedEvents(prev => prev.filter(se => se.event.id !== eventId));
+            })
+            .catch(() => {});
+    };
+
+    const renderEventCard = (event, showStatus = false, showUnsave = false) => (
         <div
             key={event.id}
             style={styles.card}
@@ -152,7 +162,7 @@ const MyEventsPage = () => {
                     </div>
                 ) : (
                     <div style={styles.grid}>
-                        {savedEvents.map(se => renderEventCard(se.event, false))}
+                        {savedEvents.map(se => renderEventCard(se.event, false, true))}
                     </div>
                 )
             )}
@@ -282,6 +292,12 @@ const styles = {
     cardDate: {
         fontSize: '11px',
         color: '#8B6A56',
+    },
+    unsaveBtn: {
+        fontSize: '16px',
+        color: '#D85A30',
+        cursor: 'pointer',
+        marginLeft: 'auto',
     },
 };
 
