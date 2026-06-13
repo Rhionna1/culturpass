@@ -47,4 +47,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
             "(LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(e.description) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     List<Event> searchByKeyword(@Param("keyword") String keyword);
+
+    // Find all active events happening after a specific date
+    List<Event> findByStatusAndEventDateAfter(String status, LocalDateTime date);
 }
