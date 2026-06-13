@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 // This class maps directly to the saved_events table in our PostgreSQL database
 @Entity
@@ -25,6 +26,7 @@ public class SavedEvent {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
