@@ -75,7 +75,8 @@ const EventGrid = () => {
             {/* Section header */}
             <div style={styles.header}>
                 <h2 style={styles.title}>Discover near you</h2>
-                <p style={styles.subtitle}>Handpicked events happening in Dallas</p>
+                {/* Subtitle — national platform, no city hardcoded */}
+                <p style={styles.subtitle}>Handpicked events happening near you</p>
             </div>
 
             {/* Category filter pills */}
