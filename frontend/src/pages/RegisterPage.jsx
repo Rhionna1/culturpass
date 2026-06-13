@@ -50,7 +50,8 @@ const RegisterPage = () => {
             <div style={styles.card}>
 
                 <h1 style={styles.title}>Create your account</h1>
-                <p style={styles.subtitle}>Join CulturPass and discover your city</p>
+                {/* Subtitle — y(our) plays on both personal and communal ownership */}
+                <p style={styles.subtitle}>Join FunctionPass and discover y(our) events</p>
 
                 {error && <p style={styles.error}>{error}</p>}
 
