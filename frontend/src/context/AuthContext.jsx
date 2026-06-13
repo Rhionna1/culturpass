@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import api from '../services/api.js';
 
 // AuthContext — stores the logged-in user globally across the entire app
 const AuthContext = createContext(null);
@@ -12,15 +13,29 @@ export const AuthProvider = ({ children }) => {
         const savedToken = localStorage.getItem('culturpass_token');
         if (savedToken) {
             setToken(savedToken);
-            setUser(parseToken(savedToken));
+            fetchUserInfo(savedToken);
         }
     }, []);
 
-    // Log in — save token to state and localStorage
+    // Fetch the full user info including ID from the backend
+    const fetchUserInfo = (currentToken) => {
+        api.get('/auth/me', {
+            headers: { Authorization: `Bearer ${currentToken}` }
+        })
+            .then(res => setUser(res.data))
+            .catch(() => {
+                // Token is invalid — clear everything
+                localStorage.removeItem('culturpass_token');
+                setToken(null);
+                setUser(null);
+            });
+    };
+
+    // Log in — save token and fetch user info
     const login = (newToken) => {
         localStorage.setItem('culturpass_token', newToken);
         setToken(newToken);
-        setUser(parseToken(newToken));
+        fetchUserInfo(newToken);
     };
 
     // Log out — clear everything
@@ -41,19 +56,6 @@ export const AuthProvider = ({ children }) => {
             {children}
         </AuthContext.Provider>
     );
-};
-
-// Parse the JWT token to extract user info
-const parseToken = (token) => {
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        return {
-            email: payload.sub,
-            role: payload.role,
-        };
-    } catch {
-        return null;
-    }
 };
 
 // Custom hook to use auth anywhere in the app
