@@ -15,6 +15,7 @@ const SubmitEventModal = ({ onClose }) => {
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [form, setForm] = useState({
+        eventType: 'event',
         title: '',
         category: '',
         description: '',
@@ -28,6 +29,10 @@ const SubmitEventModal = ({ onClose }) => {
         priceMin: '',
         priceMax: '',
         imageUrl: '',
+        businessName: '',
+        happyHourDays: '',
+        happyHourStart: '',
+        happyHourEnd: '',
     });
 
     const update = (field, value) => {
@@ -36,12 +41,15 @@ const SubmitEventModal = ({ onClose }) => {
 
     const isStepValid = () => {
         switch (step) {
-            case 1: return form.title.trim() !== '';
+            case 1: return form.title.trim() !== '' &&
+                (form.eventType === 'event' || form.businessName.trim() !== '');
             case 2: return form.category !== '';
             case 3: return form.description.trim() !== '';
-            case 4: return form.eventDate !== '';
+            case 4: return form.eventType === 'happyhour'
+                ? form.happyHourDays.trim() !== '' && form.happyHourStart.trim() !== '' && form.happyHourEnd.trim() !== ''
+                : form.eventDate !== '';
             case 5: return form.venueName.trim() !== '' && form.address.trim() !== '' && form.city.trim() !== '';
-            case 6: return form.ticketUrl.trim() !== '';
+            case 6: return form.eventType === 'happyhour' ? true : form.ticketUrl.trim() !== '';
             case 7: return form.isFree || (form.priceMin !== '' && form.priceMax !== '');
             case 8: return form.imageUrl.trim() !== '';
             default: return true;
@@ -58,16 +66,21 @@ const SubmitEventModal = ({ onClose }) => {
     const handleSubmit = () => {
         setSubmitting(true);
         const payload = {
+            eventType: form.eventType,
             title: form.title,
             category: form.category,
             description: form.description,
-            eventDate: form.eventDate,
-            ticketUrl: form.ticketUrl,
+            eventDate: form.eventType === 'happyhour' ? null : form.eventDate,
+            ticketUrl: form.ticketUrl || null,
             ticketDeadline: form.ticketDeadline || null,
             isFree: form.isFree,
             priceMin: form.isFree ? null : parseFloat(form.priceMin) || null,
             priceMax: form.isFree ? null : parseFloat(form.priceMax) || null,
             imageUrl: form.imageUrl,
+            businessName: form.eventType === 'happyhour' ? form.businessName : null,
+            happyHourDays: form.eventType === 'happyhour' ? form.happyHourDays : null,
+            happyHourStart: form.eventType === 'happyhour' ? form.happyHourStart : null,
+            happyHourEnd: form.eventType === 'happyhour' ? form.happyHourEnd : null,
             source: 'user',
             status: 'pending',
         };
@@ -88,16 +101,63 @@ const SubmitEventModal = ({ onClose }) => {
                 return (
                     <StepWrapper
                         step={step}
-                        question="What is the name of your event?"
-                        hint="Be specific and descriptive"
+                        question="What type of listing is this?"
+                        hint="Choose the type that best describes what you are posting"
                     >
-                        <input
-                            style={styles.input}
-                            placeholder="e.g. Dallas Jazz Night at the Majestic"
-                            value={form.title}
-                            onChange={e => update('title', e.target.value)}
-                            autoFocus
-                        />
+                        <div style={styles.categoryGrid}>
+                            <button
+                                onClick={() => update('eventType', 'event')}
+                                style={{
+                                    ...styles.categoryBtn,
+                                    ...(form.eventType === 'event' ? styles.categoryBtnActive : {}),
+                                }}
+                            >
+                                🎭 Event
+                            </button>
+                            <button
+                                onClick={() => update('eventType', 'happyhour')}
+                                style={{
+                                    ...styles.categoryBtn,
+                                    ...(form.eventType === 'happyhour' ? styles.categoryBtnActive : {}),
+                                }}
+                            >
+                                🍸 Happy Hour
+                            </button>
+                        </div>
+
+                        {/* Show different title field based on event type */}
+                        <div style={{ marginTop: '20px' }}>
+                            {form.eventType === 'happyhour' ? (
+                                <>
+                                    <label style={styles.deadlineLabel}>Business name (required)</label>
+                                    <input
+                                        style={{ ...styles.input, marginBottom: '12px' }}
+                                        placeholder="e.g. The Rustic Bar & Grill"
+                                        value={form.businessName}
+                                        onChange={e => update('businessName', e.target.value)}
+                                        autoFocus
+                                    />
+                                    <label style={styles.deadlineLabel}>Listing title</label>
+                                    <input
+                                        style={styles.input}
+                                        placeholder="e.g. Happy Hour at The Rustic"
+                                        value={form.title}
+                                        onChange={e => update('title', e.target.value)}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <label style={styles.deadlineLabel}>Event name</label>
+                                    <input
+                                        style={styles.input}
+                                        placeholder="e.g. Dallas Jazz Night at the Majestic"
+                                        value={form.title}
+                                        onChange={e => update('title', e.target.value)}
+                                        autoFocus
+                                    />
+                                </>
+                            )}
+                        </div>
                     </StepWrapper>
                 );
             case 2:
@@ -143,15 +203,41 @@ const SubmitEventModal = ({ onClose }) => {
                 return (
                     <StepWrapper
                         step={step}
-                        question="When is your event?"
-                        hint="Date and start time"
+                        question={form.eventType === 'happyhour' ? "When is Happy Hour?" : "When is your event?"}
+                        hint={form.eventType === 'happyhour' ? "Days and hours for your Happy Hour" : "Date and start time"}
                     >
-                        <input
-                            style={styles.input}
-                            type="datetime-local"
-                            value={form.eventDate}
-                            onChange={e => update('eventDate', e.target.value)}
-                        />
+                        {form.eventType === 'happyhour' ? (
+                            <>
+                                <label style={styles.deadlineLabel}>Days (e.g. Mon - Fri, Daily, Weekends)</label>
+                                <input
+                                    style={{ ...styles.input, marginBottom: '12px' }}
+                                    placeholder="e.g. Monday - Friday"
+                                    value={form.happyHourDays}
+                                    onChange={e => update('happyHourDays', e.target.value)}
+                                />
+                                <label style={styles.deadlineLabel}>Start time</label>
+                                <input
+                                    style={{ ...styles.input, marginBottom: '12px' }}
+                                    placeholder="e.g. 4:00 PM"
+                                    value={form.happyHourStart}
+                                    onChange={e => update('happyHourStart', e.target.value)}
+                                />
+                                <label style={styles.deadlineLabel}>End time</label>
+                                <input
+                                    style={styles.input}
+                                    placeholder="e.g. 7:00 PM"
+                                    value={form.happyHourEnd}
+                                    onChange={e => update('happyHourEnd', e.target.value)}
+                                />
+                            </>
+                        ) : (
+                            <input
+                                style={styles.input}
+                                type="datetime-local"
+                                value={form.eventDate}
+                                onChange={e => update('eventDate', e.target.value)}
+                            />
+                        )}
                     </StepWrapper>
                 );
             case 5:
