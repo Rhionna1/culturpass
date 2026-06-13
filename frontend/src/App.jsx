@@ -9,6 +9,7 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import ContactModal from './components/ContactModal.jsx';
 import MyEventsPage from './pages/MyEventsPage.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 
@@ -16,6 +17,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 const App = () => {
     const [showCurtain, setShowCurtain] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showContact, setShowContact] = useState(false);
 
     useEffect(() => {
         const hasVisited = localStorage.getItem('culturpass_visited');
@@ -35,10 +37,13 @@ const App = () => {
             {showCurtain && (
                 <CurtainAnimation onComplete={handleCurtainComplete} />
             )}
-            <NavBar onAddEvent={() => setShowModal(true)} />
+                <NavBar onAddEvent={() => setShowModal(true)} onContact={() => setShowContact(true)} />
             {showModal && (
                 <SubmitEventModal onClose={() => setShowModal(false)} />
             )}
+                {showContact && (
+                    <ContactModal onClose={() => setShowContact(false)} />
+                )}
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/events/:id" element={<EventDetailPage />} />

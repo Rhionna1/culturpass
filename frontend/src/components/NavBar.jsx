@@ -3,7 +3,7 @@ import Logo from '../assets/Logo.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 
 // Navigation bar — appears on every page
-const NavBar = ({ onAddEvent }) => {
+const NavBar = ({ onAddEvent, onContact }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const { isLoggedIn, isAdmin, user, logout } = useAuth();
@@ -47,6 +47,9 @@ const NavBar = ({ onAddEvent }) => {
 
                 <button onClick={onAddEvent} style={styles.submitBtn}>
                     + Add Event
+                </button>
+                <button onClick={onContact} style={styles.envelopeBtn}>
+                    ✉️
                 </button>
 
                 {isLoggedIn() ? (
@@ -134,6 +137,15 @@ const styles = {
         color: '#F5EBE0',
         cursor: 'pointer',
         fontFamily: 'inherit',
+    },
+    envelopeBtn: {
+        background: 'transparent',
+        border: 'none',
+        fontSize: '20px',
+        cursor: 'pointer',
+        padding: '4px',
+        display: 'flex',
+        alignItems: 'center',
     },
 };
 
