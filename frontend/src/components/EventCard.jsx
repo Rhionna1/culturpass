@@ -38,9 +38,14 @@ const EventCard = ({ event }) => {
             {/* Card body */}
             <div style={styles.body}>
 
-                {/* Category badge + save button */}
+                {/* Category badge + happy hour badge + save button */}
                 <div style={styles.topRow}>
-                    <span style={styles.categoryBadge}>{event.category}</span>
+                    <div style={styles.badgeRow}>
+                        <span style={styles.categoryBadge}>{event.category}</span>
+                        {event.eventType === 'happyhour' && (
+                            <span style={styles.happyHourBadge}>🍸 Happy Hour</span>
+                        )}
+                    </div>
                     <span style={styles.heartBtn}>♡</span>
                 </div>
 
@@ -146,6 +151,20 @@ const styles = {
         fontSize: '12px',
         fontWeight: '500',
         marginTop: '6px',
+    },
+    badgeRow: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        flexWrap: 'wrap',
+    },
+    happyHourBadge: {
+        fontSize: '10px',
+        fontWeight: '500',
+        color: '#1A3A2A',
+        backgroundColor: '#E1F5EE',
+        padding: '2px 8px',
+        borderRadius: '10px',
     },
 };
 
