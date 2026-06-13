@@ -37,6 +37,8 @@ const Hero = () => {
 
             {/* Event info below the video */}
             <div style={styles.infoContainer}>
+                {/* FunctionPass slogan — shown above the featured event */}
+                <p style={styles.slogan}>OUR event destination</p>
                 {loading ? (
                     <p style={styles.loading}>Loading featured event...</p>
                 ) : event ? (
@@ -142,6 +144,14 @@ const styles = {
     loading: {
         color: '#8B6A56',
         fontSize: '13px',
+    },
+    slogan: {
+        fontSize: '11px',
+        fontWeight: '500',
+        color: '#BA7517',
+        letterSpacing: '0.12em',
+        textTransform: 'uppercase',
+        marginBottom: '10px',
     },
 };
 
