@@ -23,6 +23,7 @@ const SubmitEventModal = ({ onClose }) => {
         address: '',
         city: '',
         ticketUrl: '',
+        ticketDeadline: '',
         isFree: false,
         priceMin: '',
         priceMax: '',
@@ -62,6 +63,7 @@ const SubmitEventModal = ({ onClose }) => {
             description: form.description,
             eventDate: form.eventDate,
             ticketUrl: form.ticketUrl,
+            ticketDeadline: form.ticketDeadline || null,
             isFree: form.isFree,
             priceMin: form.isFree ? null : parseFloat(form.priceMin) || null,
             priceMax: form.isFree ? null : parseFloat(form.priceMax) || null,
@@ -187,10 +189,19 @@ const SubmitEventModal = ({ onClose }) => {
                         hint="Paste the link to your ticketing page — purchases happen there, not on CulturPass"
                     >
                         <input
-                            style={styles.input}
+                            style={{ ...styles.input, marginBottom: '16px' }}
                             placeholder="https://www.eventbrite.com/your-event"
                             value={form.ticketUrl}
                             onChange={e => update('ticketUrl', e.target.value)}
+                        />
+                        <label style={styles.deadlineLabel}>
+                            Ticket deadline (optional) — last date to purchase tickets
+                        </label>
+                        <input
+                            style={styles.input}
+                            type="datetime-local"
+                            value={form.ticketDeadline}
+                            onChange={e => update('ticketDeadline', e.target.value)}
                         />
                     </StepWrapper>
                 );
@@ -619,6 +630,13 @@ const styles = {
         fontWeight: '500',
         cursor: 'pointer',
         fontFamily: 'inherit',
+    },
+    deadlineLabel: {
+        display: 'block',
+        fontSize: '12px',
+        fontWeight: '500',
+        color: '#6B4F3A',
+        marginBottom: '8px',
     },
 };
 
