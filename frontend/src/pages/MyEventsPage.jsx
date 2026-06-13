@@ -121,7 +121,8 @@ const MyEventsPage = () => {
 
             <div style={styles.header}>
                 <h1 style={styles.title}>My Events</h1>
-                <p style={styles.subtitle}>Your CulturPass activity</p>
+                {/* Subtitle — updated to FunctionPass brand name */}
+                <p style={styles.subtitle}>Your FunctionPass activity</p>
             </div>
 
             {/* Tab switcher */}
