@@ -51,6 +51,11 @@ CREATE TABLE IF NOT EXISTS events (
     capacity     INTEGER,
     status       VARCHAR(50)  DEFAULT 'active',
     is_featured  BOOLEAN      DEFAULT false,
+    event_type      VARCHAR(50)  DEFAULT 'event',
+    business_name   VARCHAR(255),
+    happy_hour_days VARCHAR(255),
+    happy_hour_start VARCHAR(50),
+    happy_hour_end  VARCHAR(50),
     created_at   TIMESTAMPTZ DEFAULT NOW(),
     updated_at   TIMESTAMPTZ DEFAULT NOW()
     );

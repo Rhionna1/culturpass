@@ -79,6 +79,24 @@ public class Event {
     @Column(name = "is_featured")
     private Boolean isFeatured = false;
 
+    // Event type — 'event' for regular events, 'happyhour' for permanent happy hour listings
+    @Builder.Default
+    @Column(name = "event_type")
+    private String eventType = "event";
+
+    // Happy Hour specific fields
+    @Column(name = "business_name")
+    private String businessName;
+
+    @Column(name = "happy_hour_days")
+    private String happyHourDays;
+
+    @Column(name = "happy_hour_start")
+    private String happyHourStart;
+
+    @Column(name = "happy_hour_end")
+    private String happyHourEnd;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
