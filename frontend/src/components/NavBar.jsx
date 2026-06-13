@@ -20,7 +20,8 @@ const NavBar = ({ onAddEvent, onContact }) => {
 
             <Link to="/" style={styles.logoLink}>
                 <Logo size={36} />
-                <span style={styles.brandName}>CULTUR<span style={styles.brandAccent}>PASS</span></span>
+                {/* FunctionPass brand name — FUNCTION in cream, PASS in terracotta */}
+                <span style={styles.brandName}>FUNCTION<span style={styles.brandAccent}>PASS</span></span>
             </Link>
 
             <div style={styles.links}>
