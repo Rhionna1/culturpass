@@ -92,6 +92,20 @@ const EventDetailPage = () => {
                     </span>
                 </div>
 
+                {/* Ticket deadline — only shows if one exists */}
+                {event.ticketDeadline && (
+                    <div style={styles.metaRow}>
+                        <span style={styles.metaIcon}>⏰</span>
+                        <span style={{
+                            ...styles.metaText,
+                            color: '#993C1D',
+                            fontWeight: '500',
+                        }}>
+                            Get tickets by {formatDate(event.ticketDeadline)}
+                        </span>
+                    </div>
+                )}
+
                 <div style={styles.divider} />
 
                 {event.description && (
