@@ -1,8 +1,56 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
+import { isEventSaved, saveEvent, unsaveEvent } from '../services/api.js';
 
 // EventCard — displays a single event in the discovery grid
 const EventCard = ({ event }) => {
     const navigate = useNavigate();
+    const { isLoggedIn, user } = useAuth();
+
+    // State for whether this event is saved by the current user
+    const [saved, setSaved] = useState(false);
+    const [savingInProgress, setSavingInProgress] = useState(false);
+
+    // Check if this event is already saved when the card loads
+    useEffect(() => {
+        if (isLoggedIn() && user) {
+            isEventSaved(user.id, event.id)
+                .then(res => setSaved(res.data.saved))
+                .catch(() => {});
+        }
+    }, [event.id]);
+
+    // Toggle save/unsave when heart is clicked
+    const handleSave = (e) => {
+        // Stop the click from navigating to the event detail page
+        e.stopPropagation();
+
+        if (!isLoggedIn()) {
+            navigate('/signin');
+            return;
+        }
+
+        if (savingInProgress) return;
+        setSavingInProgress(true);
+
+        if (saved) {
+            unsaveEvent(user.id, event.id)
+                .then(() => {
+                    setSaved(false);
+                    setSavingInProgress(false);
+                })
+                .catch(() => setSavingInProgress(false));
+        } else {
+            saveEvent(user.id, event.id)
+                .then(() => {
+                    setSaved(true);
+                    setSavingInProgress(false);
+                })
+                .catch(() => setSavingInProgress(false));
+        }
+    };
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             month: 'short',
@@ -38,7 +86,7 @@ const EventCard = ({ event }) => {
             {/* Card body */}
             <div style={styles.body}>
 
-                {/* Category badge + happy hour badge + save button */}
+                {/* Category badges + save button */}
                 <div style={styles.topRow}>
                     <div style={styles.badgeRow}>
                         <span style={styles.categoryBadge}>{event.category}</span>
@@ -46,16 +94,32 @@ const EventCard = ({ event }) => {
                             <span style={styles.happyHourBadge}>🍸 Happy Hour</span>
                         )}
                     </div>
-                    <span style={styles.heartBtn}>♡</span>
+                    {/* Heart icon — filled if saved, outline if not */}
+                    <span
+                        style={{
+                            ...styles.heartBtn,
+                            color: saved ? '#D85A30' : '#D4B8A8',
+                        }}
+                        onClick={handleSave}
+                        title={saved ? 'Remove from saved' : 'Save event'}
+                    >
+            {saved ? '♥' : '♡'}
+          </span>
                 </div>
 
                 {/* Event title */}
                 <p style={styles.title}>{event.title}</p>
 
-                {/* Date */}
-                <p style={styles.meta}>
-                    📅 {formatDate(event.eventDate)}
-                </p>
+                {/* Date or Happy Hour hours */}
+                {event.eventType === 'happyhour' ? (
+                    <p style={styles.meta}>
+                        🍸 {event.happyHourDays} · {event.happyHourStart} – {event.happyHourEnd}
+                    </p>
+                ) : (
+                    <p style={styles.meta}>
+                        📅 {formatDate(event.eventDate)}
+                    </p>
+                )}
 
                 {/* Price */}
                 <p style={{
@@ -122,6 +186,12 @@ const styles = {
         alignItems: 'center',
         marginBottom: '8px',
     },
+    badgeRow: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        flexWrap: 'wrap',
+    },
     categoryBadge: {
         fontSize: '10px',
         fontWeight: '500',
@@ -130,10 +200,18 @@ const styles = {
         padding: '2px 8px',
         borderRadius: '10px',
     },
+    happyHourBadge: {
+        fontSize: '10px',
+        fontWeight: '500',
+        color: '#1A3A2A',
+        backgroundColor: '#E1F5EE',
+        padding: '2px 8px',
+        borderRadius: '10px',
+    },
     heartBtn: {
-        fontSize: '16px',
-        color: '#D4B8A8',
+        fontSize: '18px',
         cursor: 'pointer',
+        transition: 'color 0.2s',
     },
     title: {
         fontSize: '13px',
@@ -151,20 +229,6 @@ const styles = {
         fontSize: '12px',
         fontWeight: '500',
         marginTop: '6px',
-    },
-    badgeRow: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        flexWrap: 'wrap',
-    },
-    happyHourBadge: {
-        fontSize: '10px',
-        fontWeight: '500',
-        color: '#1A3A2A',
-        backgroundColor: '#E1F5EE',
-        padding: '2px 8px',
-        borderRadius: '10px',
     },
 };
 
