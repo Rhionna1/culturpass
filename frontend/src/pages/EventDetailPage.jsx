@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getEventById } from '../services/api.js';
+import { useAuth } from '../context/AuthContext.jsx';
+import { isEventSaved, saveEvent, unsaveEvent } from '../services/api.js';
 
 const EventDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { isLoggedIn, user } = useAuth();
+    const [saved, setSaved] = useState(false);
+    const [savingInProgress, setSavingInProgress] = useState(false);
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -18,6 +23,15 @@ const EventDetailPage = () => {
                 setLoading(false);
             });
     }, [id]);
+
+    // Check if this event is already saved when the page loads
+    useEffect(() => {
+        if (isLoggedIn() && user && event) {
+            isEventSaved(user.id, event.id)
+                .then(res => setSaved(res.data.saved))
+                .catch(() => {});
+        }
+    }, [event]);
 
     if (loading) return <p style={styles.loading}>Loading event...</p>;
     if (!event) return <p style={styles.loading}>Event not found.</p>;
@@ -39,6 +53,32 @@ const EventDetailPage = () => {
             return `$${event.priceMin} – $${event.priceMax}`;
         if (event.priceMin) return `From $${event.priceMin}`;
         return 'See event';
+    };
+
+    // Toggle save/unsave
+    const handleSave = () => {
+        if (!isLoggedIn()) {
+            navigate('/signin');
+            return;
+        }
+        if (savingInProgress) return;
+        setSavingInProgress(true);
+
+        if (saved) {
+            unsaveEvent(user.id, event.id)
+                .then(() => {
+                    setSaved(false);
+                    setSavingInProgress(false);
+                })
+                .catch(() => setSavingInProgress(false));
+        } else {
+            saveEvent(user.id, event.id)
+                .then(() => {
+                    setSaved(true);
+                    setSavingInProgress(false);
+                })
+                .catch(() => setSavingInProgress(false));
+        }
     };
 
     return (
@@ -130,6 +170,7 @@ const EventDetailPage = () => {
                     <p style={styles.description}>{event.description}</p>
                 )}
 
+                {/* Action buttons */}
                 <div style={styles.buttons}>
                     <button style={styles.rsvpBtn}>RSVP Now</button>
                     {event.ticketUrl && (
@@ -137,6 +178,15 @@ const EventDetailPage = () => {
                             Get Tickets ↗
                         </a>
                     )}
+                    <button
+                        onClick={handleSave}
+                        style={{
+                            ...styles.heartBtnDetail,
+                            color: saved ? '#D85A30' : '#8B6A56',
+                        }}
+                    >
+                        {saved ? '♥ Saved' : '♡ Save'}
+                    </button>
                 </div>
 
             </div>
@@ -267,6 +317,15 @@ const styles = {
         textDecoration: 'none',
         display: 'inline-flex',
         alignItems: 'center',
+    },
+    heartBtnDetail: {
+        backgroundColor: 'transparent',
+        border: '0.5px solid #D4B8A8',
+        borderRadius: '8px',
+        padding: '14px 24px',
+        fontSize: '13px',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
     },
 };
 
