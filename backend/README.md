@@ -1,8 +1,12 @@
-# CulturPass 🎭
+# FunctionPass 🎭
+
+> OUR event destination
 
 A full-stack cultural event discovery platform that helps users find,
-save, and RSVP to cultural events in their city — from art shows and
-music festivals to food markets and community gatherings.
+save, and RSVP to events in their city — from art shows and music
+festivals to food markets, happy hours, and community gatherings.
+
+Built for and by the culture.
 
 ---
 
@@ -11,16 +15,16 @@ music festivals to food markets and community gatherings.
 **Backend**
 - Java 21 + Spring Boot 3.5.14
 - Spring Data JPA + Hibernate
-- Spring Security (JWT + OAuth 2.0)
+- Spring Security (JWT Authentication)
 - PostgreSQL (AWS RDS in production)
 - Maven
 
-**Frontend** *(Phase 2)*
+**Frontend**
 - React + Vite
 - Axios
 - React Router v6
 
-**Infrastructure** *(Phase 4)*
+**Infrastructure** *(Phase 5)*
 - AWS EC2, RDS, S3, API Gateway
 - GitHub Actions CI/CD
 - Docker (local development)
@@ -35,7 +39,6 @@ music festivals to food markets and community gatherings.
 ---
 
 ## Project Structure
-
 culturpass/
 ├── backend/    # Java Spring Boot REST API
 └── frontend/   # React SPA (Phase 2)
@@ -59,15 +62,31 @@ docker compose up -d
 ./mvnw spring-boot:run
 ```
 
+### Run the frontend
+```bash
+cd frontend
+npm run dev
+```
+
 ---
+
+## Features
+- 🎭 Event discovery with category filters and search
+- 🍸 Happy Hour permanent listings
+- ♥ Save events to your profile
+- 🎟️ Multi-step event submission with admin approval
+- 👑 Admin dashboard — approve, reject, and feature events
+- 🔐 JWT authentication with role-based access control
+- ✉️ Contact modal for user feedback
 
 ## Development Phases
 
 - **Phase 1** — Project setup, database schema, core entities ✅
-- **Phase 2** — REST API endpoints, authentication, external APIs
-- **Phase 3** — Community features, UX polish, notifications
-- **Phase 4** — AWS deployment, CI/CD, testing
+- **Phase 2** — REST API, authentication, event submission ✅
+- **Phase 3** — Community features, save events, Happy Hour ✅
+- **Phase 4** — Promoter system, ratings, PWA
+- **Phase 5** — AWS deployment, CI/CD, custom domain
 
 ---
 
-*Built by Rhionna — [@Rhionna1](https://github.com/Rhionna1/culturpass.git)*
+*Built by Rhionna — [@Rhionna1](https://github.com/Rhionna1/culturpass)*
