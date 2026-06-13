@@ -20,6 +20,7 @@ const NavBar = ({ onAddEvent, onContact }) => {
 
             <Link to="/" style={styles.logoLink}>
                 <Logo size={36} />
+                <span style={styles.brandName}>CULTUR<span style={styles.brandAccent}>PASS</span></span>
             </Link>
 
             <div style={styles.links}>
@@ -146,6 +147,16 @@ const styles = {
         padding: '4px',
         display: 'flex',
         alignItems: 'center',
+    },
+    brandName: {
+        fontSize: '14px',
+        fontWeight: '500',
+        color: '#F5EBE0',
+        letterSpacing: '0.08em',
+        marginLeft: '10px',
+    },
+    brandAccent: {
+        color: '#D85A30',
     },
 };
 
