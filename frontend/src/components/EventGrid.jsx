@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import EventCard from './EventCard.jsx';
 import { getUpcomingEvents, getUpcomingEventsByCategory } from '../services/api.js';
+import SearchBar from './SearchBar.jsx';
+import api from '../services/api.js';
 
 // Categories for the filter pills
 const CATEGORIES = ['All', 'Music', 'Art', 'Food', 'Culture', 'Dance', 'Film', 'Fashion'];
@@ -10,6 +12,8 @@ const EventGrid = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('All');
+    const [searchResults, setSearchResults] = useState(null);
+    const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
         fetchEvents(activeCategory);
@@ -31,8 +35,27 @@ const EventGrid = () => {
             });
     };
 
+    const handleSearch = (keyword) => {
+        setIsSearching(true);
+        setLoading(true);
+        api.get(`/events/search?keyword=${keyword}`)
+            .then(res => {
+                setSearchResults(res.data);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    };
+
+    const handleClear = () => {
+        setIsSearching(false);
+        setSearchResults(null);
+        fetchEvents(activeCategory);
+    };
+
     return (
         <div style={styles.container}>
+
+            <SearchBar onSearch={handleSearch} onClear={handleClear} />
 
             {/* Section header */}
             <div style={styles.header}>
@@ -56,9 +79,18 @@ const EventGrid = () => {
                 ))}
             </div>
 
-            {/* Event grid */}
             {loading ? (
                 <p style={styles.loading}>Loading events...</p>
+            ) : isSearching && searchResults !== null ? (
+                searchResults.length === 0 ? (
+                    <p style={styles.loading}>No events found for your search.</p>
+                ) : (
+                    <div style={styles.grid}>
+                        {searchResults.map(event => (
+                            <EventCard key={event.id} event={event} />
+                        ))}
+                    </div>
+                )
             ) : events.length === 0 ? (
                 <p style={styles.loading}>No events found in this category.</p>
             ) : (
