@@ -1,26 +1,34 @@
 import { useState, useEffect } from 'react';
 import EventCard from './EventCard.jsx';
-import { getUpcomingEvents, getUpcomingEventsByCategory } from '../services/api.js';
 import SearchBar from './SearchBar.jsx';
+import { getUpcomingEvents, getUpcomingEventsByCategory } from '../services/api.js';
 import api from '../services/api.js';
 
-// Categories for the filter pills
-const CATEGORIES = ['All', 'Music', 'Art', 'Food', 'Culture', 'Dance', 'Film', 'Fashion'];
+// Categories available for filtering events
+const CATEGORIES = ['All', 'Music', 'Art', 'Food', 'Fashion', 'Culture', 'Dance', 'Film'];
 
-// EventGrid — Pinterest-style discovery grid with category filters
+// EventGrid — Pinterest-style discovery grid with category filters and search
 const EventGrid = () => {
+    // State for the list of events to display
     const [events, setEvents] = useState([]);
+    // State for loading indicator
     const [loading, setLoading] = useState(true);
+    // State for the currently selected category filter
     const [activeCategory, setActiveCategory] = useState('All');
+    // State for search results — null means no search has been performed
     const [searchResults, setSearchResults] = useState(null);
+    // State to track whether the user is in search mode
     const [isSearching, setIsSearching] = useState(false);
 
+    // Fetch events whenever the active category changes
     useEffect(() => {
         fetchEvents(activeCategory);
     }, [activeCategory]);
 
+    // Fetches events based on the selected category
     const fetchEvents = (category) => {
         setLoading(true);
+        // If All is selected fetch all upcoming events, otherwise filter by category
         const call = category === 'All'
             ? getUpcomingEvents()
             : getUpcomingEventsByCategory(category);
@@ -35,6 +43,7 @@ const EventGrid = () => {
             });
     };
 
+    // Handles keyword search — calls the search endpoint and stores results
     const handleSearch = (keyword) => {
         setIsSearching(true);
         setLoading(true);
@@ -46,6 +55,7 @@ const EventGrid = () => {
             .catch(() => setLoading(false));
     };
 
+    // Clears the search and returns to the normal category view
     const handleClear = () => {
         setIsSearching(false);
         setSearchResults(null);
@@ -55,6 +65,7 @@ const EventGrid = () => {
     return (
         <div style={styles.container}>
 
+            {/* Search bar — sits above category filters */}
             <SearchBar onSearch={handleSearch} onClear={handleClear} />
 
             {/* Section header */}
@@ -68,10 +79,15 @@ const EventGrid = () => {
                 {CATEGORIES.map(cat => (
                     <button
                         key={cat}
-                        onClick={() => setActiveCategory(cat)}
+                        onClick={() => {
+                            setActiveCategory(cat);
+                            // Clear search when switching categories
+                            setIsSearching(false);
+                            setSearchResults(null);
+                        }}
                         style={{
                             ...styles.pill,
-                            ...(activeCategory === cat ? styles.pillActive : {}),
+                            ...(activeCategory === cat && !isSearching ? styles.pillActive : {}),
                         }}
                     >
                         {cat}
@@ -79,9 +95,11 @@ const EventGrid = () => {
                 ))}
             </div>
 
+            {/* Event grid — shows search results or category filtered events */}
             {loading ? (
                 <p style={styles.loading}>Loading events...</p>
             ) : isSearching && searchResults !== null ? (
+                // Show search results
                 searchResults.length === 0 ? (
                     <p style={styles.loading}>No events found for your search.</p>
                 ) : (
@@ -94,6 +112,7 @@ const EventGrid = () => {
             ) : events.length === 0 ? (
                 <p style={styles.loading}>No events found in this category.</p>
             ) : (
+                // Show category filtered events
                 <div style={styles.grid}>
                     {events.map(event => (
                         <EventCard key={event.id} event={event} />
@@ -138,6 +157,7 @@ const styles = {
         fontWeight: '500',
         color: '#6B4F3A',
         cursor: 'pointer',
+        fontFamily: 'inherit',
     },
     pillActive: {
         backgroundColor: '#1A0F0A',
