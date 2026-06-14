@@ -6,17 +6,19 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
 
 // Handles creating and validating JWT tokens
 @Component
 public class JwtUtil {
 
     // Secret key — in production this goes in environment variables
-    private static final String SECRET = "culturpass-secret-key-must-be-at-least-32-characters-long";
+    @Value("${app.jwt.secret}")
+    private String secret;
     private static final long EXPIRATION = 1000 * 60 * 60 * 24; // 24 hours
 
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     // Generate a JWT token for a user
