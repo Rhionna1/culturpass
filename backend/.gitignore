@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Sensitive configuration files — never commit these
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
+
+# Environment variables
+.env
+.env.local
