@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAllEvents, getUpcomingEvents } from '../services/api.js';
 import api from '../services/api.js';
+import EditEventModal from '../components/EditEventModal.jsx';
 
 // AdminDashboard — protected admin page for managing events
 const AdminDashboard = () => {
@@ -8,6 +9,8 @@ const AdminDashboard = () => {
     const [stats, setStats] = useState({ pending: 0, active: 0, rejected: 0, total: 0 });
     const [loading, setLoading] = useState(true);
     const [activeNav, setActiveNav] = useState('dashboard');
+    // State for the edit modal — null means closed, event object means open
+    const [editingEvent, setEditingEvent] = useState(null);
 
     useEffect(() => {
         fetchData();
@@ -45,6 +48,11 @@ const AdminDashboard = () => {
     const handleFeature = (id) => {
         api.put(`/admin/events/${id}/feature`)
             .then(() => fetchData());
+    };
+
+    // Handle event saved from edit modal — refresh data
+    const handleEventSaved = (updatedEvent) => {
+        fetchData();
     };
 
     const formatDate = (dateString) => {
@@ -191,6 +199,13 @@ const AdminDashboard = () => {
                                                 <i className="ti ti-star" style={{ fontSize: '11px' }} aria-hidden="true" />
                                                 Feature
                                             </button>
+                                            <button
+                                                style={styles.btnEdit}
+                                                onClick={() => setEditingEvent(event)}
+                                            >
+                                                <i className="ti ti-edit" style={{ fontSize: '11px' }} aria-hidden="true" />
+                                                Edit
+                                            </button>
                                         </div>
                                     </div>
                                 );
@@ -199,6 +214,14 @@ const AdminDashboard = () => {
                     )}
                 </div>
             </div>
+            {/* Edit event modal */}
+            {editingEvent && (
+                <EditEventModal
+                    event={editingEvent}
+                    onClose={() => setEditingEvent(null)}
+                    onSaved={handleEventSaved}
+                />
+            )}
         </div>
     );
 };
@@ -403,6 +426,20 @@ const styles = {
         backgroundColor: '#FAEEDA',
         color: '#633806',
         border: '0.5px solid #FAC775',
+        borderRadius: '6px',
+        padding: '6px 12px',
+        fontSize: '11px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px',
+        fontFamily: 'inherit',
+    },
+    btnEdit: {
+        backgroundColor: '#E6F1FB',
+        color: '#0C447C',
+        border: '0.5px solid #B5D4F4',
         borderRadius: '6px',
         padding: '6px 12px',
         fontSize: '11px',
