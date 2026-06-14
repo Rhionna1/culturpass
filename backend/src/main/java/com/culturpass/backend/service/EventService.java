@@ -86,6 +86,33 @@ public class EventService {
         return eventRepository.findByStatus("pending");
     }
 
+    // Admin only — edit any event's details
+    public Event editEvent(UUID id, Event updatedEvent) {
+        // Find the existing event
+        Event existing = eventRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+
+        // Update only the fields that were provided
+        if (updatedEvent.getTitle() != null) existing.setTitle(updatedEvent.getTitle());
+        if (updatedEvent.getDescription() != null) existing.setDescription(updatedEvent.getDescription());
+        if (updatedEvent.getCategory() != null) existing.setCategory(updatedEvent.getCategory());
+        if (updatedEvent.getEventDate() != null) existing.setEventDate(updatedEvent.getEventDate());
+        if (updatedEvent.getEndDate() != null) existing.setEndDate(updatedEvent.getEndDate());
+        if (updatedEvent.getImageUrl() != null) existing.setImageUrl(updatedEvent.getImageUrl());
+        if (updatedEvent.getTicketUrl() != null) existing.setTicketUrl(updatedEvent.getTicketUrl());
+        if (updatedEvent.getTicketDeadline() != null) existing.setTicketDeadline(updatedEvent.getTicketDeadline());
+        if (updatedEvent.getPriceMin() != null) existing.setPriceMin(updatedEvent.getPriceMin());
+        if (updatedEvent.getPriceMax() != null) existing.setPriceMax(updatedEvent.getPriceMax());
+        if (updatedEvent.getIsFree() != null) existing.setIsFree(updatedEvent.getIsFree());
+        if (updatedEvent.getStatus() != null) existing.setStatus(updatedEvent.getStatus());
+        if (updatedEvent.getBusinessName() != null) existing.setBusinessName(updatedEvent.getBusinessName());
+        if (updatedEvent.getHappyHourDays() != null) existing.setHappyHourDays(updatedEvent.getHappyHourDays());
+        if (updatedEvent.getHappyHourStart() != null) existing.setHappyHourStart(updatedEvent.getHappyHourStart());
+        if (updatedEvent.getHappyHourEnd() != null) existing.setHappyHourEnd(updatedEvent.getHappyHourEnd());
+
+        return eventRepository.save(existing);
+    }
+
     // Get the currently featured event for the hero section
     public Optional<Event> getFeaturedEvent() {
         return eventRepository.findByIsFeaturedTrue();

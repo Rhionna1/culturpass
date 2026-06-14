@@ -51,4 +51,27 @@ public class AdminController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // PUT /api/admin/events/{id} — edit any event
+    @PutMapping("/events/{id}")
+    public ResponseEntity<Event> editEvent(
+            @PathVariable UUID id,
+            @RequestBody Event updatedEvent) {
+        try {
+            return ResponseEntity.ok(eventService.editEvent(id, updatedEvent));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // DELETE /api/admin/events/{id} — delete any event permanently
+    @DeleteMapping("/events/{id}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable UUID id) {
+        try {
+            eventService.deleteEvent(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
