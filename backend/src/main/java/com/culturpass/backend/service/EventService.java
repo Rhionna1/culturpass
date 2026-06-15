@@ -47,9 +47,9 @@ public class EventService {
         return eventRepository.findByOrganizerId(organizerId);
     }
 
-    // Get all upcoming events
+    // Get all upcoming ACTIVE events only
     public List<Event> getUpcomingEvents() {
-        return eventRepository.findByEventDateAfter(LocalDateTime.now());
+        return eventRepository.findByStatusAndEventDateAfter("active", LocalDateTime.now());
     }
 
     // Save a new event — new events default to pending approval
