@@ -52,7 +52,7 @@ const SubmitEventModal = ({ onClose }) => {
             case 5: return form.venueName.trim() !== '' && form.address.trim() !== '' && form.city.trim() !== '';
             case 6: return form.ticketUrl.trim() !== '';
             case 7: return form.isFree || (form.priceMin !== '' && form.priceMax !== '');
-            case 8: return form.imageUrl.trim() !== '';
+            case 8: return true; // Image is optional — file upload coming in AWS phase
             default: return true;
         }
     };
@@ -352,7 +352,7 @@ const SubmitEventModal = ({ onClose }) => {
                     <StepWrapper
                         step={step}
                         question="Add an image for your event"
-                        hint="Paste a URL to an image that represents your event"
+                        hint="Paste a URL to an image for now — direct photo uploads coming soon"
                     >
                         <input
                             style={styles.input}
