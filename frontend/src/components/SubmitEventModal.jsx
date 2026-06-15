@@ -26,6 +26,7 @@ const SubmitEventModal = ({ onClose }) => {
         venueName: '',
         address: '',
         city: '',
+        state: '',
         ticketUrl: '',
         ticketDeadline: '',
         isFree: false,
@@ -77,6 +78,12 @@ const SubmitEventModal = ({ onClose }) => {
             priceMin: form.isFree ? null : parseFloat(form.priceMin) || null,
             priceMax: form.isFree ? null : parseFloat(form.priceMax) || null,
             imageUrl: form.imageUrl,
+            // Location fields — sent separately so backend can find or create location
+            venueName: form.venueName,
+            address: form.address,
+            city: form.city,
+            state: form.state || '',
+            // Happy Hour specific fields
             businessName: form.eventType === 'happyhour' ? form.businessName : null,
             happyHourDays: form.eventType === 'happyhour' ? form.happyHourDays : null,
             happyHourStart: form.eventType === 'happyhour' ? form.happyHourStart : null,
@@ -260,10 +267,16 @@ const SubmitEventModal = ({ onClose }) => {
                             onChange={e => update('address', e.target.value)}
                         />
                         <input
-                            style={styles.input}
+                            style={{ ...styles.input, marginBottom: '12px' }}
                             placeholder="City"
                             value={form.city}
                             onChange={e => update('city', e.target.value)}
+                        />
+                        <input
+                            style={styles.input}
+                            placeholder="State (e.g. TX, IL, NY)"
+                            value={form.state}
+                            onChange={e => update('state', e.target.value)}
                         />
                     </StepWrapper>
                 );
