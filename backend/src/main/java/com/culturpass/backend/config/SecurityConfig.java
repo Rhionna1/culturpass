@@ -27,6 +27,8 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Allow all OPTIONS preflight requests through for CORS
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         // Admin routes — ADMIN role only
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         // Auth routes — public
