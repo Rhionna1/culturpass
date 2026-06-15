@@ -72,6 +72,23 @@ export const saveEvent = (userId, eventId) => api.post(`/saved/${userId}/${event
 // Unsave an event
 export const unsaveEvent = (userId, eventId) => api.delete(`/saved/${userId}/${eventId}`);
 
+// ── Category calls ────────────────────────────────────────
+
+// Get all active categories
+export const getCategories = () => api.get('/categories');
+
+// Get all deleted categories — admin only
+export const getDeletedCategories = () => api.get('/categories/deleted');
+
+// Add a new category — admin only
+export const addCategory = (name) => api.post('/categories', { name });
+
+// Soft-delete a category — admin only
+export const deleteCategory = (id) => api.delete(`/categories/${id}`);
+
+// Restore a deleted category — admin only
+export const restoreCategory = (id) => api.put(`/categories/${id}/restore`);
+
 // ── Health check ─────────────────────────────────────────
 
 export const checkHealth = () => api.get('/health');
