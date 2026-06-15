@@ -15,23 +15,33 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Allow our React frontend
+        // Allow our React frontend on both dev ports
         config.setAllowedOrigins(List.of(
                 "http://localhost:5173",
                 "http://localhost:3000"
         ));
 
-        // Allow these HTTP methods
+        // Allow all HTTP methods including OPTIONS for preflight requests
         config.setAllowedMethods(List.of(
-                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
         ));
 
-        // Allow all headers
-        config.setAllowedHeaders(List.of("*"));
+        // Allow all headers including Authorization for JWT
+        config.setAllowedHeaders(List.of(
+                "Authorization",
+                "Content-Type",
+                "Accept",
+                "Origin",
+                "X-Requested-With"
+        ));
 
-        // Allow cookies and auth headers
+        // Allow credentials (needed for JWT Authorization header)
         config.setAllowCredentials(true);
 
+        // Cache preflight response for 1 hour
+        config.setMaxAge(3600L);
+
+        // Apply to all API routes
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", config);
 
