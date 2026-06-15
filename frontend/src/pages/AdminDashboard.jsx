@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getAllEvents, getUpcomingEvents } from '../services/api.js';
 import api from '../services/api.js';
 import EditEventModal from '../components/EditEventModal.jsx';
+import CategoryManager from '../components/CategoryManager.jsx';
 
 // AdminDashboard — protected admin page for managing events
 const AdminDashboard = () => {
@@ -213,6 +213,8 @@ const AdminDashboard = () => {
                         </div>
                     )}
                 </div>
+                {/* Category management section */}
+                <CategoryManager />
             </div>
             {/* Edit event modal */}
             {editingEvent && (
