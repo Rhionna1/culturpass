@@ -1,15 +1,8 @@
 import { useState, useEffect } from 'react';
 import EventCard from './EventCard.jsx';
+import { getUpcomingEvents, getUpcomingEventsByCategory, getCategories } from '../services/api.js';
 import SearchBar from './SearchBar.jsx';
-import { getUpcomingEvents, getUpcomingEventsByCategory } from '../services/api.js';
 import api from '../services/api.js';
-
-// Categories available for filtering events
-const CATEGORIES = [
-    'All', 'Art', 'Culture', 'Dance', 'Drink', 'Family',
-    'Fashion', 'Film', 'Fitness', 'Food', 'LGBTQIA+',
-    'Music', 'Religious', 'Smoke Friendly'
-];
 
 // EventGrid — Pinterest-style discovery grid with category filters and search
 const EventGrid = () => {
@@ -23,11 +16,20 @@ const EventGrid = () => {
     const [searchResults, setSearchResults] = useState(null);
     // State to track whether the user is in search mode
     const [isSearching, setIsSearching] = useState(false);
+    // Dynamic categories fetched from the backend
+    const [categories, setCategories] = useState([]);
 
     // Fetch events whenever the active category changes
     useEffect(() => {
         fetchEvents(activeCategory);
     }, [activeCategory]);
+
+    // Fetch categories dynamically from the database
+    useEffect(() => {
+        getCategories()
+            .then(res => setCategories(res.data))
+            .catch(() => {});
+    }, []);
 
     // Fetches events based on the selected category
     const fetchEvents = (category) => {
@@ -81,7 +83,7 @@ const EventGrid = () => {
 
             {/* Category filter pills */}
             <div style={styles.filters}>
-                {CATEGORIES.map(cat => (
+                {['All', ...categories.map(c => c.name)].map(cat => (
                     <button
                         key={cat}
                         onClick={() => {
