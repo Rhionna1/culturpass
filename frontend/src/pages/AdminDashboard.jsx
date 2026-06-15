@@ -8,6 +8,7 @@ const AdminDashboard = () => {
     const [pendingEvents, setPendingEvents] = useState([]);
     const [stats, setStats] = useState({ pending: 0, active: 0, rejected: 0, total: 0 });
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
     const [activeNav, setActiveNav] = useState('dashboard');
     // State for the edit modal — null means closed, event object means open
     const [editingEvent, setEditingEvent] = useState(null);
@@ -110,7 +111,9 @@ const AdminDashboard = () => {
                     ))}
                 </div>
                 <div style={styles.sidebarFooter}>
-                    <p style={styles.sidebarFooterText}>Signed in as Admin</p>
+                    <p style={styles.sidebarFooterText}>
+                        Signed in as {user?.role === 'SUPER_ADMIN' ? 'Super Admin' : 'Admin'}
+                    </p>
                 </div>
             </div>
 
@@ -125,7 +128,13 @@ const AdminDashboard = () => {
                             {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </p>
                     </div>
-                    <p style={styles.headerRight}>Welcome back, Admin</p>
+                    <p style={styles.headerRight}>
+                        Welcome back, {user?.displayName || user?.email?.split('@')[0]}!
+                        {' '}
+                        <span style={{ color: '#D85A30', fontWeight: '500' }}>
+              ({user?.role === 'SUPER_ADMIN' ? 'Super Admin' : 'Admin'})
+            </span>
+                    </p>
                 </div>
 
                 {/* Body */}
