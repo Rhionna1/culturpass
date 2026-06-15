@@ -29,8 +29,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Allow all OPTIONS preflight requests through for CORS
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        // Admin routes — ADMIN role only
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        // Super Admin routes — SUPER_ADMIN role only
+                        .requestMatchers("/api/super-admin/**").hasRole("SUPER_ADMIN")
+                        // Admin routes — ADMIN or SUPER_ADMIN
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         // Auth routes — public
                         .requestMatchers("/api/auth/**").permitAll()
                         // Health check — public
