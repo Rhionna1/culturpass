@@ -105,8 +105,8 @@ export const getUnreviewedComplaints = () => api.get('/complaints/unreviewed');
 export const getRacismComplaints = () => api.get('/complaints/racism');
 
 // Mark a complaint as reviewed — admin only
-export const reviewComplaint = (id, adminNotes) =>
-    api.put(`/complaints/${id}/review`, { adminNotes });
+export const reviewComplaint = (id, adminNotes, reviewedBy) =>
+    api.put(`/complaints/${id}/review`, { adminNotes, reviewedBy });
 
 // ── Health check ─────────────────────────────────────────
 

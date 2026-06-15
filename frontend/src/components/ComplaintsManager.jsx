@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext.jsx';
 import { getAllComplaints, getUnreviewedComplaints, getRacismComplaints, reviewComplaint } from '../services/api.js';
 
 // ComplaintsManager — admin component for viewing and managing complaints
 const ComplaintsManager = () => {
+    const { user } = useAuth();
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState('all');
@@ -27,8 +29,9 @@ const ComplaintsManager = () => {
             .catch(() => setLoading(false));
     };
 
+    // Mark complaint as reviewed — passes current admin's email for accountability
     const handleReview = (id) => {
-        reviewComplaint(id, adminNotes)
+        reviewComplaint(id, adminNotes, user?.email)
             .then(() => {
                 setReviewingId(null);
                 setAdminNotes('');
@@ -114,10 +117,16 @@ const ComplaintsManager = () => {
                             </div>
 
                             {/* Admin notes if reviewed */}
-                            {complaint.reviewed && complaint.adminNotes && (
+                            {complaint.reviewed && (
                                 <div style={styles.adminNotes}>
-                                    <p style={styles.adminNotesLabel}>Admin notes:</p>
-                                    <p style={styles.adminNotesText}>{complaint.adminNotes}</p>
+                                    {complaint.reviewedBy && (
+                                        <p style={styles.adminNotesLabel}>
+                                            Reviewed by: {complaint.reviewedBy}
+                                        </p>
+                                    )}
+                                    {complaint.adminNotes && (
+                                        <p style={styles.adminNotesText}>{complaint.adminNotes}</p>
+                                    )}
                                 </div>
                             )}
 
