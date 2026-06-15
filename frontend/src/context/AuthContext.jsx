@@ -48,11 +48,14 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in
     const isLoggedIn = () => !!token;
 
-    // Check if user is an admin
-    const isAdmin = () => user?.role === 'ADMIN';
+    // Check if user is an admin or super admin
+    const isAdmin = () => user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
+
+    // Check if user is a super admin
+    const isSuperAdmin = () => user?.role === 'SUPER_ADMIN';
 
     return (
-        <AuthContext.Provider value={{ token, user, login, logout, isLoggedIn, isAdmin }}>
+        <AuthContext.Provider value={{ token, user, login, logout, isLoggedIn, isAdmin, isSuperAdmin }}>
             {children}
         </AuthContext.Provider>
     );
