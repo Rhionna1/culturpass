@@ -78,3 +78,12 @@ CREATE TABLE IF NOT EXISTS saved_events (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(user_id, event_id)
     );
+
+-- Categories table: stores event categories managed dynamically by admins
+CREATE TABLE IF NOT EXISTS categories (
+                                          id            SERIAL PRIMARY KEY,
+                                          name          VARCHAR(100) UNIQUE NOT NULL,
+    deleted       BOOLEAN DEFAULT false NOT NULL,
+    display_order INTEGER DEFAULT 0,
+    created_at    TIMESTAMPTZ DEFAULT NOW()
+    );
