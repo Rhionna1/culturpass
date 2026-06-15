@@ -2,6 +2,8 @@ package com.culturpass.backend.controller;
 
 import com.culturpass.backend.model.User;
 import com.culturpass.backend.repository.UserRepository;
+import com.culturpass.backend.model.BannedBusiness;
+import com.culturpass.backend.service.BannedBusinessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class SuperAdminController {
 
     private final UserRepository userRepository;
+    private final BannedBusinessService bannedBusinessService;
 
     // GET /api/super-admin/users — get all users
     @GetMapping("/users")
@@ -62,5 +65,39 @@ public class SuperAdminController {
                     return ResponseEntity.ok(userRepository.save(user));
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    // GET /api/super-admin/bans — get all active business bans
+    @GetMapping("/bans")
+    public ResponseEntity<List<BannedBusiness>> getActiveBans() {
+        return ResponseEntity.ok(bannedBusinessService.getActiveBans());
+    }
+
+    // POST /api/super-admin/bans — ban a business
+    @PostMapping("/bans")
+    public ResponseEntity<BannedBusiness> banBusiness(
+            @RequestBody Map<String, String> body) {
+        try {
+            return ResponseEntity.ok(bannedBusinessService.banBusiness(
+                    body.get("businessName"),
+                    body.get("reason"),
+                    body.get("bannedBy")
+            ));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // PUT /api/super-admin/bans/unban — unban a business
+    @PutMapping("/bans/unban")
+    public ResponseEntity<BannedBusiness> unbanBusiness(
+            @RequestBody Map<String, String> body) {
+        try {
+            return ResponseEntity.ok(bannedBusinessService.unbanBusiness(
+                    body.get("businessName")
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
