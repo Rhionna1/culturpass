@@ -53,4 +53,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     // Find all events by status and event type — used for Happy Hour permanent listings
     List<Event> findByStatusAndEventType(String status, String eventType);
+
+    // Find all events by business name — used for Happy Hour ban system
+    List<Event> findByBusinessName(String businessName);
 }
