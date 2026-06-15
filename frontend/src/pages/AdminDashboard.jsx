@@ -3,6 +3,7 @@ import api from '../services/api.js';
 import EditEventModal from '../components/EditEventModal.jsx';
 import CategoryManager from '../components/CategoryManager.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
+import ComplaintsManager from '../components/ComplaintsManager.jsx';
 
 // AdminDashboard — protected admin page for managing events
 const AdminDashboard = () => {
@@ -225,6 +226,9 @@ const AdminDashboard = () => {
                 </div>
                 {/* Category management section */}
                 <CategoryManager />
+
+                {/* Complaints management section */}
+                <ComplaintsManager />
             </div>
             {/* Edit event modal */}
             {editingEvent && (
