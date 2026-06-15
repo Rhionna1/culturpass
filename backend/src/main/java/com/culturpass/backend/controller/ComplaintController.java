@@ -55,7 +55,7 @@ public class ComplaintController {
             @RequestBody Map<String, String> body) {
         try {
             return ResponseEntity.ok(complaintService.reviewComplaint(
-                    id, body.get("adminNotes")));
+                    id, body.get("adminNotes"), body.get("reviewedBy")));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }

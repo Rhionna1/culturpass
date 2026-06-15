@@ -49,12 +49,13 @@ public class ComplaintService {
         return complaintRepository.save(complaint);
     }
 
-    // Mark a complaint as reviewed with admin notes
-    public Complaint reviewComplaint(UUID id, String adminNotes) {
+    // Mark a complaint as reviewed with admin notes and reviewer email
+    public Complaint reviewComplaint(UUID id, String adminNotes, String reviewedBy) {
         Complaint complaint = complaintRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Complaint not found"));
         complaint.setReviewed(true);
         complaint.setAdminNotes(adminNotes);
+        complaint.setReviewedBy(reviewedBy);
         return complaintRepository.save(complaint);
     }
 }

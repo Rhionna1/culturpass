@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS complaints (
     message            TEXT,
     submitted_by       VARCHAR(255),
     reviewed           BOOLEAN DEFAULT false,
+    reviewed_by        VARCHAR(255),
     admin_notes        TEXT,
     is_racism_complaint BOOLEAN DEFAULT false,
     created_at         TIMESTAMPTZ DEFAULT NOW()

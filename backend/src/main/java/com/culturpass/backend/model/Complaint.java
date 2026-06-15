@@ -39,6 +39,10 @@ public class Complaint {
     @Column(name = "admin_notes", columnDefinition = "TEXT")
     private String adminNotes;
 
+    // Email of the admin who reviewed this complaint
+    @Column(name = "reviewed_by")
+    private String reviewedBy;
+
     // Flag for racism complaints — makes them easy to filter
     @Builder.Default
     @Column(name = "is_racism_complaint")
