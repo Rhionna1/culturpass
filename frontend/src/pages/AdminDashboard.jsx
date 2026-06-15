@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api.js';
 import EditEventModal from '../components/EditEventModal.jsx';
 import CategoryManager from '../components/CategoryManager.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 // AdminDashboard — protected admin page for managing events
 const AdminDashboard = () => {
