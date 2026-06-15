@@ -89,6 +89,25 @@ export const deleteCategory = (id) => api.delete(`/categories/${id}`);
 // Restore a deleted category — admin only
 export const restoreCategory = (id) => api.put(`/categories/${id}/restore`);
 
+// ── Complaint calls ───────────────────────────────────────
+
+// Submit a complaint from the contact modal
+export const submitComplaint = (types, message, submittedBy) =>
+    api.post('/complaints', { types, message, submittedBy });
+
+// Get all complaints — admin only
+export const getAllComplaints = () => api.get('/complaints');
+
+// Get unreviewed complaints — admin only
+export const getUnreviewedComplaints = () => api.get('/complaints/unreviewed');
+
+// Get racism complaints — admin only
+export const getRacismComplaints = () => api.get('/complaints/racism');
+
+// Mark a complaint as reviewed — admin only
+export const reviewComplaint = (id, adminNotes) =>
+    api.put(`/complaints/${id}/review`, { adminNotes });
+
 // ── Health check ─────────────────────────────────────────
 
 export const checkHealth = () => api.get('/health');
