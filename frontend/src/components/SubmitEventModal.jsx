@@ -1,16 +1,19 @@
-import { useState } from 'react';
-import { createEvent } from '../services/api.js';
-
-const CATEGORIES = [
-    'Art', 'Culture', 'Dance', 'Drink', 'Family',
-    'Fashion', 'Film', 'Fitness', 'Food', 'LGBTQIA+',
-    'Music', 'Religious', 'Smoke Friendly'
-];
+import { useState, useEffect } from 'react';
+import { createEvent, getCategories } from '../services/api.js';
 
 const TOTAL_STEPS = 9;
 
 // SubmitEventModal — multi-step event submission form
 const SubmitEventModal = ({ onClose }) => {
+    // Dynamic categories fetched from the backend
+    const [categories, setCategories] = useState([]);
+
+    // Fetch categories on modal open
+    useEffect(() => {
+        getCategories()
+            .then(res => setCategories(res.data.map(c => c.name)))
+            .catch(() => {});
+    }, []);
     const [step, setStep] = useState(1);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -41,15 +44,12 @@ const SubmitEventModal = ({ onClose }) => {
 
     const isStepValid = () => {
         switch (step) {
-            case 1: return form.title.trim() !== '' &&
-                (form.eventType === 'event' || form.businessName.trim() !== '');
+            case 1: return form.title.trim() !== '';
             case 2: return form.category !== '';
             case 3: return form.description.trim() !== '';
-            case 4: return form.eventType === 'happyhour'
-                ? form.happyHourDays.trim() !== '' && form.happyHourStart.trim() !== '' && form.happyHourEnd.trim() !== ''
-                : form.eventDate !== '';
+            case 4: return form.eventDate !== '';
             case 5: return form.venueName.trim() !== '' && form.address.trim() !== '' && form.city.trim() !== '';
-            case 6: return form.eventType === 'happyhour' ? true : form.ticketUrl.trim() !== '';
+            case 6: return form.ticketUrl.trim() !== '';
             case 7: return form.isFree || (form.priceMin !== '' && form.priceMax !== '');
             case 8: return form.imageUrl.trim() !== '';
             default: return true;
@@ -168,7 +168,7 @@ const SubmitEventModal = ({ onClose }) => {
                         hint="Choose the one that fits best"
                     >
                         <div style={styles.categoryGrid}>
-                            {CATEGORIES.map(cat => (
+                            {categories.map(cat => (
                                 <button
                                     key={cat}
                                     onClick={() => update('category', cat)}
