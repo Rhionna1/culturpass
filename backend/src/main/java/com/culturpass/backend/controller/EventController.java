@@ -63,9 +63,57 @@ public class EventController {
     }
 
     // POST /api/events — create a new event
+    // Accepts location fields separately and creates/reuses a location record
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
-        return ResponseEntity.ok(eventService.saveEvent(event));
+    public ResponseEntity<Event> createEvent(@RequestBody java.util.Map<String, Object> body) {
+        try {
+            // Extract event fields
+            Event event = new Event();
+            if (body.get("title") != null) event.setTitle(body.get("title").toString());
+            if (body.get("description") != null) event.setDescription(body.get("description").toString());
+            if (body.get("category") != null) event.setCategory(body.get("category").toString());
+            if (body.get("source") != null) event.setSource(body.get("source").toString());
+            if (body.get("ticketUrl") != null) event.setTicketUrl(body.get("ticketUrl").toString());
+            if (body.get("imageUrl") != null) event.setImageUrl(body.get("imageUrl").toString());
+            if (body.get("isFree") != null) event.setIsFree((Boolean) body.get("isFree"));
+            if (body.get("eventType") != null) event.setEventType(body.get("eventType").toString());
+            if (body.get("businessName") != null) event.setBusinessName(body.get("businessName").toString());
+            if (body.get("happyHourDays") != null) event.setHappyHourDays(body.get("happyHourDays").toString());
+            if (body.get("happyHourStart") != null) event.setHappyHourStart(body.get("happyHourStart").toString());
+            if (body.get("happyHourEnd") != null) event.setHappyHourEnd(body.get("happyHourEnd").toString());
+
+            // Parse price fields
+            if (body.get("priceMin") != null)
+                event.setPriceMin(new java.math.BigDecimal(body.get("priceMin").toString()));
+            if (body.get("priceMax") != null)
+                event.setPriceMax(new java.math.BigDecimal(body.get("priceMax").toString()));
+
+            // Parse event date
+            if (body.get("eventDate") != null) {
+                event.setEventDate(java.time.LocalDateTime.parse(body.get("eventDate").toString()));
+            }
+
+            // Parse ticket deadline
+            if (body.get("ticketDeadline") != null && !body.get("ticketDeadline").toString().isEmpty()) {
+                event.setTicketDeadline(java.time.LocalDateTime.parse(body.get("ticketDeadline").toString()));
+            }
+
+            // Handle location — find or create
+            String venueName = body.get("venueName") != null ? body.get("venueName").toString() : null;
+            String address = body.get("address") != null ? body.get("address").toString() : null;
+            String city = body.get("city") != null ? body.get("city").toString() : null;
+            String state = body.get("state") != null ? body.get("state").toString() : null;
+
+            if (venueName != null && address != null && city != null) {
+                com.culturpass.backend.model.Location location =
+                        eventService.findOrCreateLocation(venueName, address, city, state);
+                event.setLocation(location);
+            }
+
+            return ResponseEntity.ok(eventService.saveEvent(event));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // PUT /api/events/{id} — update an event

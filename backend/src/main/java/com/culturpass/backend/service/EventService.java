@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import com.culturpass.backend.model.Location;
+import com.culturpass.backend.repository.LocationRepository;
 
 // Handles all business logic for events
 @Service
@@ -15,6 +17,7 @@ import java.util.UUID;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final LocationRepository locationRepository;
 
     // Get all active events only — pending and rejected are hidden from public
     // Get all active upcoming events plus permanent Happy Hour listings
@@ -53,11 +56,32 @@ public class EventService {
     }
 
     // Save a new event — new events default to pending approval
+    // Also creates or reuses a location record if venue info is provided
     public Event saveEvent(Event event) {
         if (event.getId() == null) {
             event.setStatus("pending");
         }
         return eventRepository.save(event);
+    }
+
+    // Find or create a location record — prevents duplicate venues
+    public Location findOrCreateLocation(String name, String address, String city, String state) {
+        // Check if a location with this address already exists
+        return locationRepository.findAll().stream()
+                .filter(loc -> loc.getAddress() != null &&
+                        loc.getAddress().equalsIgnoreCase(address) &&
+                        loc.getCity().equalsIgnoreCase(city))
+                .findFirst()
+                .orElseGet(() -> {
+                    // Create a new location record
+                    Location newLocation = Location.builder()
+                            .name(name)
+                            .address(address)
+                            .city(city)
+                            .state(state != null ? state : "")
+                            .build();
+                    return locationRepository.save(newLocation);
+                });
     }
 
     // Delete an event by its ID
