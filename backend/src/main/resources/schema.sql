@@ -87,3 +87,14 @@ CREATE TABLE IF NOT EXISTS categories (
     display_order INTEGER DEFAULT 0,
     created_at    TIMESTAMPTZ DEFAULT NOW()
     );
+
+-- Banned businesses table: tracks businesses banned from the platform by Super Admin
+CREATE TABLE IF NOT EXISTS banned_businesses (
+                                                 id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    business_name VARCHAR(255),
+    location_id   UUID REFERENCES locations(id) ON DELETE SET NULL,
+    reason        TEXT,
+    banned_by     VARCHAR(255),
+    created_at    TIMESTAMPTZ DEFAULT NOW(),
+    is_active     BOOLEAN DEFAULT true
+    );
