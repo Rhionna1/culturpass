@@ -4,13 +4,15 @@ import EditEventModal from '../components/EditEventModal.jsx';
 import CategoryManager from '../components/CategoryManager.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import ComplaintsManager from '../components/ComplaintsManager.jsx';
+import BannedBusinessManager from '../components/BannedBusinessManager.jsx';
+import UserManager from '../components/UserManager.jsx';
 
 // AdminDashboard — protected admin page for managing events
 const AdminDashboard = () => {
     const [pendingEvents, setPendingEvents] = useState([]);
     const [stats, setStats] = useState({ pending: 0, active: 0, rejected: 0, total: 0 });
     const [loading, setLoading] = useState(true);
-    const { user } = useAuth();
+    const { user, isSuperAdmin } = useAuth();
     const [activeNav, setActiveNav] = useState('dashboard');
     // State for the edit modal — null means closed, event object means open
     const [editingEvent, setEditingEvent] = useState(null);
@@ -229,6 +231,14 @@ const AdminDashboard = () => {
 
                 {/* Complaints management section */}
                 <ComplaintsManager />
+
+                {/* Super Admin only sections */}
+                {isSuperAdmin() && (
+                    <>
+                        <BannedBusinessManager />
+                        <UserManager />
+                    </>
+                )}
             </div>
             {/* Edit event modal */}
             {editingEvent && (
