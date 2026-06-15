@@ -98,3 +98,15 @@ CREATE TABLE IF NOT EXISTS banned_businesses (
     created_at    TIMESTAMPTZ DEFAULT NOW(),
     is_active     BOOLEAN DEFAULT true
     );
+
+-- Complaints table: stores contact form submissions and user complaints
+CREATE TABLE IF NOT EXISTS complaints (
+                                          id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    complaint_types    TEXT,
+    message            TEXT,
+    submitted_by       VARCHAR(255),
+    reviewed           BOOLEAN DEFAULT false,
+    admin_notes        TEXT,
+    is_racism_complaint BOOLEAN DEFAULT false,
+    created_at         TIMESTAMPTZ DEFAULT NOW()
+    );
