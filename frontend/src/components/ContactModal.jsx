@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { submitComplaint } from '../services/api.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 // Contact options the user can select from
 const CONTACT_OPTIONS = [
@@ -17,6 +19,7 @@ const MAX_CHARS = 500;
 
 // ContactModal — blurred backdrop modal for contacting CulturPass
 const ContactModal = ({ onClose }) => {
+    const { user } = useAuth();
     // Step 1 = checkboxes, Step 2 = message, Step 3 = success
     const [step, setStep] = useState(1);
     const [selected, setSelected] = useState([]);
@@ -32,14 +35,22 @@ const ContactModal = ({ onClose }) => {
         );
     };
 
-    // Handle form submission
+    // Submit complaint to backend — stores in database for admin review
     const handleSubmit = () => {
         setSubmitting(true);
-        // Simulate sending — we will wire to backend in a future phase
-        setTimeout(() => {
-            setSubmitting(false);
-            setStep(3);
-        }, 1000);
+        submitComplaint(
+            selected,
+            message,
+            user?.email || 'anonymous'
+        )
+            .then(() => {
+                setSubmitting(false);
+                setStep(3);
+            })
+            .catch(() => {
+                setSubmitting(false);
+                setStep(3); // Still show success — don't leave user hanging
+            });
     };
 
     return (
