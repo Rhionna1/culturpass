@@ -285,7 +285,7 @@ const SubmitEventModal = ({ onClose }) => {
                     <StepWrapper
                         step={step}
                         question="Where can people buy tickets?"
-                        hint="Paste the link to your ticketing page — purchases happen there, not on CulturPass"
+                        hint="Paste the link to your ticketing page — purchases happen there, not on FunctionPass"
                     >
                         <input
                             style={{ ...styles.input, marginBottom: '16px' }}
@@ -420,7 +420,7 @@ const SubmitEventModal = ({ onClose }) => {
                         <p style={styles.successIcon}>🎭</p>
                         <h2 style={styles.successTitle}>Event submitted!</h2>
                         <p style={styles.successText}>
-                            Your event is under review. It will appear on CulturPass within 48 hours if approved.
+                            Your event is under review. It will appear on FunctionPass within 48 hours if approved.
                         </p>
                         <button style={styles.doneBtn} onClick={onClose}>Done</button>
                     </div>
