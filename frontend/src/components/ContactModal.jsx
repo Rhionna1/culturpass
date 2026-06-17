@@ -5,19 +5,19 @@ import { useAuth } from '../context/AuthContext.jsx';
 // Contact options the user can select from
 const CONTACT_OPTIONS = [
     "I would love to share my experience about an event",
-    "I am a business and would like to have an event featured on CulturPass",
-    "I am a business and would like for CulturPass to take an event off of the site",
+    "I am a business and would like to have an event featured on FunctionPass",
+    "I am a business and would like for FunctionPass to take an event off of the site",
     "I submitted an event with incorrect information",
     "Experienced racism at this event",
     "Poor customer service at this event",
-    "CulturPass needs a feature on the site",
-    "CulturPass is not working correctly",
+    "FunctionPass needs a feature on the site",
+    "FunctionPass is not working correctly",
 ];
 
 // Maximum characters allowed in the message
 const MAX_CHARS = 500;
 
-// ContactModal — blurred backdrop modal for contacting CulturPass
+// ContactModal — blurred backdrop modal for contacting FunctionPass
 const ContactModal = ({ onClose }) => {
     const { user } = useAuth();
     // Step 1 = checkboxes, Step 2 = message, Step 3 = success
@@ -63,7 +63,7 @@ const ContactModal = ({ onClose }) => {
                 {/* Step 1 — checkbox options */}
                 {step === 1 && (
                     <>
-                        <h2 style={styles.title}>Contact CulturPass</h2>
+                        <h2 style={styles.title}>Contact FunctionPass</h2>
                         <p style={styles.subtitle}>Select all that apply</p>
 
                         <div style={styles.optionsList}>
