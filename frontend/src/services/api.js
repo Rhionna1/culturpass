@@ -13,7 +13,7 @@ const api = axios.create({
 
 // Automatically attach JWT token to every request if one exists
 api.interceptors.request.use(config => {
-    const token = localStorage.getItem('culturpass_token');
+    const token = localStorage.getItem('functionpass_token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
