@@ -20,14 +20,14 @@ const App = () => {
     const [showContact, setShowContact] = useState(false);
 
     useEffect(() => {
-        const hasVisited = localStorage.getItem('culturpass_visited');
+        const hasVisited = localStorage.getItem('functionpass_visited');
         if (!hasVisited) {
             setShowCurtain(true);
         }
     }, []);
 
     const handleCurtainComplete = () => {
-        localStorage.setItem('culturpass_visited', 'true');
+        localStorage.setItem('functionpass_visited', 'true');
         setShowCurtain(false);
     };
 
