@@ -39,12 +39,15 @@ public class CategoryController {
     }
 
     // DELETE /api/categories/{id} — soft-delete a category (admin only)
+    // Blocked with a clear message if events still reference this category
     @DeleteMapping("/{id}")
-    public ResponseEntity<Category> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(categoryService.deleteCategory(id));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
         }
     }
 
