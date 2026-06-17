@@ -55,6 +55,7 @@ const CategoryManager = () => {
     };
 
     // Final delete — only fires after 3 confirmations
+    // Backend blocks deletion if events still reference this category
     const handleFinalDelete = () => {
         if (!confirmingDelete) return;
         deleteCategory(confirmingDelete.id)
@@ -63,7 +64,12 @@ const CategoryManager = () => {
                 setConfirmCount(0);
                 fetchCategories();
             })
-            .catch(() => setError('Could not delete category.'));
+            .catch(err => {
+                const message = err.response?.data?.error || 'Could not delete category.';
+                setError(message);
+                setConfirmingDelete(null);
+                setConfirmCount(0);
+            });
     };
 
     // Cancel delete confirmation
