@@ -12,6 +12,7 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final com.culturpass.backend.repository.EventRepository eventRepository;
 
     // Get all active categories for the frontend dropdown and filter pills — always alphabetical
     public List<Category> getActiveCategories() {
@@ -37,10 +38,23 @@ public class CategoryService {
     }
 
     // Soft-delete a category — admin only
-    // The category is hidden but not permanently removed
+    // Blocked if any events still reference this category — must reassign or delete those events first
     public Category deleteCategory(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+
+        // Check if any events still use this category
+        List<com.culturpass.backend.model.Event> eventsInCategory =
+                eventRepository.findByCategory(category.getName());
+
+        if (!eventsInCategory.isEmpty()) {
+            throw new IllegalStateException(
+                    "Cannot delete category '" + category.getName() + "' — " +
+                            eventsInCategory.size() + " event(s) still use this category. " +
+                            "Reassign or delete those events first."
+            );
+        }
+
         category.setDeleted(true);
         return categoryRepository.save(category);
     }
