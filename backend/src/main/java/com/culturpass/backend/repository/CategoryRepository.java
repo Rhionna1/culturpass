@@ -10,11 +10,11 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    // Get all active (non-deleted) categories ordered by display order
-    List<Category> findByDeletedFalseOrderByDisplayOrderAsc();
+    // Get all active (non-deleted) categories ordered alphabetically by name
+    List<Category> findByDeletedFalseOrderByNameAsc();
 
-    // Get all deleted categories — for restore functionality
-    List<Category> findByDeletedTrueOrderByDisplayOrderAsc();
+    // Get all deleted categories ordered alphabetically — for restore functionality
+    List<Category> findByDeletedTrueOrderByNameAsc();
 
     // Find a category by name
     Optional<Category> findByName(String name);

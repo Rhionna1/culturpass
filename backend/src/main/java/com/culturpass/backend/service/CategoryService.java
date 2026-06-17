@@ -13,14 +13,14 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    // Get all active categories for the frontend dropdown and filter pills
+    // Get all active categories for the frontend dropdown and filter pills — always alphabetical
     public List<Category> getActiveCategories() {
-        return categoryRepository.findByDeletedFalseOrderByDisplayOrderAsc();
+        return categoryRepository.findByDeletedFalseOrderByNameAsc();
     }
 
-    // Get all soft-deleted categories — for admin restore functionality
+    // Get all soft-deleted categories — for admin restore functionality — always alphabetical
     public List<Category> getDeletedCategories() {
-        return categoryRepository.findByDeletedTrueOrderByDisplayOrderAsc();
+        return categoryRepository.findByDeletedTrueOrderByNameAsc();
     }
 
     // Add a new category — admin only
