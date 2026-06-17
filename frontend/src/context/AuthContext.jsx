@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // Check if a token exists in localStorage on app load
-        const savedToken = localStorage.getItem('culturpass_token');
+        const savedToken = localStorage.getItem('functionpass_token');
         if (savedToken) {
             setToken(savedToken);
             fetchUserInfo(savedToken);
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
             .then(res => setUser(res.data))
             .catch(() => {
                 // Token is invalid — clear everything
-                localStorage.removeItem('culturpass_token');
+                localStorage.removeItem('functionpass_token');
                 setToken(null);
                 setUser(null);
             });
@@ -33,14 +33,14 @@ export const AuthProvider = ({ children }) => {
 
     // Log in — save token and fetch user info
     const login = (newToken) => {
-        localStorage.setItem('culturpass_token', newToken);
+        localStorage.setItem('functionpass_token', newToken);
         setToken(newToken);
         fetchUserInfo(newToken);
     };
 
     // Log out — clear everything
     const logout = () => {
-        localStorage.removeItem('culturpass_token');
+        localStorage.removeItem('functionpass_token');
         setToken(null);
         setUser(null);
     };
