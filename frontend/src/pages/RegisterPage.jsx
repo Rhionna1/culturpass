@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import api from '../services/api.js';
 
-// RegisterPage — create a new CulturPass account
+// RegisterPage — create a new FunctionPass account
 const RegisterPage = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
