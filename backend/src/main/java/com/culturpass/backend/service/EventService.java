@@ -56,12 +56,32 @@ public class EventService {
     }
 
     // Save a new event — new events default to pending approval
-    // Also creates or reuses a location record if venue info is provided
+    // Validates multi-day events: consecutive only, max 7 days, Happy Hour exempt
     public Event saveEvent(Event event) {
         if (event.getId() == null) {
             event.setStatus("pending");
         }
+        validateEventDuration(event);
         return eventRepository.save(event);
+    }
+
+    // Validates that multi-day events don't exceed 7 days
+    // Happy Hour events are exempt since they don't use start/end dates the same way
+    private void validateEventDuration(Event event) {
+        if ("happyhour".equals(event.getEventType())) {
+            return;
+        }
+        if (event.getEventDate() != null && event.getEndDate() != null) {
+            if (event.getEndDate().isBefore(event.getEventDate())) {
+                throw new IllegalArgumentException("End date cannot be before the start date");
+            }
+            long daysBetween = java.time.Duration.between(
+                    event.getEventDate(), event.getEndDate()
+            ).toDays();
+            if (daysBetween > 7) {
+                throw new IllegalArgumentException("Events cannot run longer than 7 days");
+            }
+        }
     }
 
     // Find or create a location record — prevents duplicate venues
