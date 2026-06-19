@@ -65,7 +65,7 @@ public class EventController {
     // POST /api/events — create a new event
     // Accepts location fields separately and creates/reuses a location record
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody java.util.Map<String, Object> body) {
+    public ResponseEntity<?> createEvent(@RequestBody java.util.Map<String, Object> body) {
         try {
             // Extract event fields
             Event event = new Event();
@@ -93,6 +93,11 @@ public class EventController {
                 event.setEventDate(java.time.LocalDateTime.parse(body.get("eventDate").toString()));
             }
 
+            // Parse end date — for multi-day events
+            if (body.get("endDate") != null && !body.get("endDate").toString().isEmpty()) {
+                event.setEndDate(java.time.LocalDateTime.parse(body.get("endDate").toString()));
+            }
+
             // Parse ticket deadline
             if (body.get("ticketDeadline") != null && !body.get("ticketDeadline").toString().isEmpty()) {
                 event.setTicketDeadline(java.time.LocalDateTime.parse(body.get("ticketDeadline").toString()));
@@ -111,6 +116,8 @@ public class EventController {
             }
 
             return ResponseEntity.ok(eventService.saveEvent(event));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
