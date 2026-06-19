@@ -154,6 +154,7 @@ public class EventService {
         if (updatedEvent.getHappyHourStart() != null) existing.setHappyHourStart(updatedEvent.getHappyHourStart());
         if (updatedEvent.getHappyHourEnd() != null) existing.setHappyHourEnd(updatedEvent.getHappyHourEnd());
 
+        validateEventDuration(existing);
         return eventRepository.save(existing);
     }
 
