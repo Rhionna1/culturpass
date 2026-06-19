@@ -73,13 +73,13 @@ public class EventService {
         }
         if (event.getEventDate() != null && event.getEndDate() != null) {
             if (event.getEndDate().isBefore(event.getEventDate())) {
-                throw new IllegalArgumentException("End date cannot be before the start date");
+                throw new IllegalStateException("End date cannot be before the start date");
             }
             long daysBetween = java.time.Duration.between(
                     event.getEventDate(), event.getEndDate()
             ).toDays();
             if (daysBetween > 7) {
-                throw new IllegalArgumentException("Events cannot run longer than 7 days");
+                throw new IllegalStateException("Events cannot run longer than 7 days");
             }
         }
     }

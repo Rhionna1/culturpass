@@ -116,7 +116,7 @@ public class EventController {
             }
 
             return ResponseEntity.ok(eventService.saveEvent(event));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

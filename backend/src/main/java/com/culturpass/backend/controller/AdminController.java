@@ -54,11 +54,13 @@ public class AdminController {
 
     // PUT /api/admin/events/{id} — edit any event
     @PutMapping("/events/{id}")
-    public ResponseEntity<Event> editEvent(
+    public ResponseEntity<?> editEvent(
             @PathVariable UUID id,
             @RequestBody Event updatedEvent) {
         try {
             return ResponseEntity.ok(eventService.editEvent(id, updatedEvent));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
