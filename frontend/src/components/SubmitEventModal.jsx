@@ -27,6 +27,8 @@ const SubmitEventModal = ({ onClose }) => {
         address: '',
         city: '',
         state: '',
+        isMultiDay: false,
+        endDate: '',
         ticketUrl: '',
         ticketDeadline: '',
         isFree: false,
@@ -45,12 +47,15 @@ const SubmitEventModal = ({ onClose }) => {
 
     const isStepValid = () => {
         switch (step) {
-            case 1: return form.title.trim() !== '';
+            case 1: return form.title.trim() !== '' &&
+                (form.eventType === 'event' || form.businessName.trim() !== '');
             case 2: return form.category !== '';
             case 3: return form.description.trim() !== '';
-            case 4: return form.eventDate !== '';
+            case 4: return form.eventType === 'happyhour'
+                ? form.happyHourDays.trim() !== '' && form.happyHourStart.trim() !== '' && form.happyHourEnd.trim() !== ''
+                : form.eventDate !== '' && (!form.isMultiDay || form.endDate !== '');
             case 5: return form.venueName.trim() !== '' && form.address.trim() !== '' && form.city.trim() !== '';
-            case 6: return form.ticketUrl.trim() !== '';
+            case 6: return form.eventType === 'happyhour' ? true : form.ticketUrl.trim() !== '';
             case 7: return form.isFree || (form.priceMin !== '' && form.priceMax !== '');
             case 8: return true; // Image is optional — file upload coming in AWS phase
             default: return true;
@@ -72,6 +77,7 @@ const SubmitEventModal = ({ onClose }) => {
             category: form.category,
             description: form.description,
             eventDate: form.eventType === 'happyhour' ? null : form.eventDate,
+            endDate: form.eventType === 'happyhour' ? null : (form.isMultiDay ? form.endDate : null),
             ticketUrl: form.ticketUrl || null,
             ticketDeadline: form.ticketDeadline || null,
             isFree: form.isFree,
@@ -238,12 +244,44 @@ const SubmitEventModal = ({ onClose }) => {
                                 />
                             </>
                         ) : (
-                            <input
-                                style={styles.input}
-                                type="datetime-local"
-                                value={form.eventDate}
-                                onChange={e => update('eventDate', e.target.value)}
-                            />
+                            <>
+                                <input
+                                    style={{ ...styles.input, marginBottom: '14px' }}
+                                    type="datetime-local"
+                                    value={form.eventDate}
+                                    onChange={e => update('eventDate', e.target.value)}
+                                />
+                                <div style={styles.multiDayToggleRow}>
+                                    <label style={styles.deadlineLabel}>
+                                        Multi-day event? (e.g. weekend festival)
+                                    </label>
+                                    <button
+                                        onClick={() => update('isMultiDay', !form.isMultiDay)}
+                                        style={{
+                                            ...styles.toggle,
+                                            backgroundColor: form.isMultiDay ? '#D85A30' : '#E8D5C8',
+                                        }}
+                                    >
+                                        <div style={{
+                                            ...styles.toggleKnob,
+                                            transform: form.isMultiDay ? 'translateX(20px)' : 'translateX(0)',
+                                        }} />
+                                    </button>
+                                </div>
+                                {form.isMultiDay && (
+                                    <>
+                                        <label style={styles.deadlineLabel}>
+                                            End date (max 7 days from start)
+                                        </label>
+                                        <input
+                                            style={styles.input}
+                                            type="datetime-local"
+                                            value={form.endDate}
+                                            onChange={e => update('endDate', e.target.value)}
+                                        />
+                                    </>
+                                )}
+                            </>
                         )}
                     </StepWrapper>
                 );
@@ -736,6 +774,12 @@ const styles = {
         fontWeight: '500',
         color: '#6B4F3A',
         marginBottom: '8px',
+    },
+    multiDayToggleRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '12px',
     },
 };
 
