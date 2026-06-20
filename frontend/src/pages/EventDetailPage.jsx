@@ -107,12 +107,19 @@ const EventDetailPage = () => {
 
                 <h1 style={styles.title}>{event.title}</h1>
 
-                {/* Date — shows differently for Happy Hour vs regular events */}
+                {/* Date — shows range for multi-day, hours for Happy Hour, single date otherwise */}
                 {event.eventType === 'happyhour' ? (
                     <div style={styles.metaRow}>
                         <span style={styles.metaIcon}>🍸</span>
                         <span style={styles.metaText}>
                             {event.happyHourDays} · {event.happyHourStart} – {event.happyHourEnd}
+                        </span>
+                    </div>
+                ) : event.endDate ? (
+                    <div style={styles.metaRow}>
+                        <span style={styles.metaIcon}>📅</span>
+                        <span style={styles.metaText}>
+                            {formatDate(event.eventDate)} – {formatDate(event.endDate)}
                         </span>
                     </div>
                 ) : (
