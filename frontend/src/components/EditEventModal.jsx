@@ -8,6 +8,7 @@ const EditEventModal = ({ event, onClose, onSaved }) => {
         description: event.description || '',
         category: event.category || '',
         eventDate: event.eventDate || '',
+        endDate: event.endDate || '',
         ticketUrl: event.ticketUrl || '',
         priceMin: event.priceMin || '',
         priceMax: event.priceMax || '',
@@ -36,15 +37,17 @@ const EditEventModal = ({ event, onClose, onSaved }) => {
             priceMin: form.isFree ? null : parseFloat(form.priceMin) || null,
             priceMax: form.isFree ? null : parseFloat(form.priceMax) || null,
             eventDate: form.eventDate || null,
+            endDate: form.endDate || null,
         })
             .then(res => {
                 setSaving(false);
                 onSaved(res.data);
                 onClose();
             })
-            .catch(() => {
+            .catch(err => {
                 setSaving(false);
-                setError('Failed to save changes. Please try again.');
+                const message = err.response?.data?.error || 'Failed to save changes. Please try again.';
+                setError(message);
             });
     };
 
@@ -105,17 +108,28 @@ const EditEventModal = ({ event, onClose, onSaved }) => {
                     />
                 </div>
 
-                {/* Event date — only for regular events */}
+                {/* Event date and optional end date — only for regular events */}
                 {event.eventType !== 'happyhour' && (
-                    <div style={styles.field}>
-                        <label style={styles.label}>Event date</label>
-                        <input
-                            style={styles.input}
-                            type="datetime-local"
-                            value={form.eventDate}
-                            onChange={e => update('eventDate', e.target.value)}
-                        />
-                    </div>
+                    <>
+                        <div style={styles.field}>
+                            <label style={styles.label}>Event start date</label>
+                            <input
+                                style={styles.input}
+                                type="datetime-local"
+                                value={form.eventDate}
+                                onChange={e => update('eventDate', e.target.value)}
+                            />
+                        </div>
+                        <div style={styles.field}>
+                            <label style={styles.label}>Event end date (optional — max 7 days from start)</label>
+                            <input
+                                style={styles.input}
+                                type="datetime-local"
+                                value={form.endDate}
+                                onChange={e => update('endDate', e.target.value)}
+                            />
+                        </div>
+                    </>
                 )}
 
                 {/* Happy Hour fields */}
