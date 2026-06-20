@@ -108,10 +108,11 @@ public class EventController {
             String address = body.get("address") != null ? body.get("address").toString() : null;
             String city = body.get("city") != null ? body.get("city").toString() : null;
             String state = body.get("state") != null ? body.get("state").toString() : null;
+            String zipCode = body.get("zipCode") != null ? body.get("zipCode").toString() : null;
 
             if (venueName != null && address != null && city != null) {
                 com.culturpass.backend.model.Location location =
-                        eventService.findOrCreateLocation(venueName, address, city, state);
+                        eventService.findOrCreateLocation(venueName, address, city, state, zipCode);
                 event.setLocation(location);
             }
 

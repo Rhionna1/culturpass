@@ -85,7 +85,7 @@ public class EventService {
     }
 
     // Find or create a location record — prevents duplicate venues
-    public Location findOrCreateLocation(String name, String address, String city, String state) {
+    public Location findOrCreateLocation(String name, String address, String city, String state, String zipCode) {
         // Check if a location with this address already exists
         return locationRepository.findAll().stream()
                 .filter(loc -> loc.getAddress() != null &&
@@ -99,6 +99,7 @@ public class EventService {
                             .address(address)
                             .city(city)
                             .state(state != null ? state : "")
+                            .zipCode(zipCode)
                             .build();
                     return locationRepository.save(newLocation);
                 });
