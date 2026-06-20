@@ -59,6 +59,15 @@ const EventCard = ({ event }) => {
         });
     };
 
+    // Formats a date range for multi-day events — e.g. "Jun 20 – Jun 22, 2026"
+    const formatDateRange = (start, end) => {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const startStr = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const endStr = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        return `${startStr} – ${endStr}`;
+    };
+
     const formatPrice = (event) => {
         if (event.isFree) return { text: 'Free entry', free: true };
         if (event.priceMin && event.priceMax)
@@ -114,6 +123,10 @@ const EventCard = ({ event }) => {
                 {event.eventType === 'happyhour' ? (
                     <p style={styles.meta}>
                         🍸 {event.happyHourDays} · {event.happyHourStart} – {event.happyHourEnd}
+                    </p>
+                ) : event.endDate ? (
+                    <p style={styles.meta}>
+                        📅 {formatDateRange(event.eventDate, event.endDate)}
                     </p>
                 ) : (
                     <p style={styles.meta}>
