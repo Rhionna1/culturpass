@@ -84,6 +84,7 @@ const SubmitEventModal = ({ onClose }) => {
             case 2: return form.category !== '';
             case 3: return form.description.trim() !== '';
             case 4: {
+                // Wrap in try/catch to prevent white screen crashes during validation
                 try {
                     if (form.eventType === 'happyhour') {
                         return form.happyHourDays.trim() !== '' &&
@@ -92,12 +93,13 @@ const SubmitEventModal = ({ onClose }) => {
                     }
                     if (!form.eventDate) return false;
                     if (form.isMultiDay) {
-                        if (!form.endDate) return false;
-                        if (!form.dailyStartTime || !form.dailyEndTime) return false;
+                        // All three fields required before we can validate dates
+                        if (!form.endDate || !form.dailyStartTime || !form.dailyEndTime) return false;
                         return validateDates();
                     }
                     return true;
                 } catch {
+                    // Return false on any unexpected error — keeps the Next button disabled
                     return false;
                 }
             }
