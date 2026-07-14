@@ -84,17 +84,22 @@ const SubmitEventModal = ({ onClose }) => {
             case 2: return form.category !== '';
             case 3: return form.description.trim() !== '';
             case 4: {
-                if (form.eventType === 'happyhour') {
-                    return form.happyHourDays.trim() !== '' &&
-                        form.happyHourStart.trim() !== '' &&
-                        form.happyHourEnd.trim() !== '';
+                try {
+                    if (form.eventType === 'happyhour') {
+                        return form.happyHourDays.trim() !== '' &&
+                            form.happyHourStart.trim() !== '' &&
+                            form.happyHourEnd.trim() !== '';
+                    }
+                    if (!form.eventDate) return false;
+                    if (form.isMultiDay) {
+                        if (!form.endDate) return false;
+                        if (!form.dailyStartTime || !form.dailyEndTime) return false;
+                        return validateDates();
+                    }
+                    return true;
+                } catch {
+                    return false;
                 }
-                if (!form.eventDate) return false;
-                if (form.isMultiDay) {
-                    if (!form.endDate || !form.dailyStartTime || !form.dailyEndTime) return false;
-                    return validateDates();
-                }
-                return true;
             }
             case 5: return form.venueName.trim() !== '' && form.address.trim() !== '' && form.city.trim() !== '';
             case 6: return form.eventType === 'happyhour' ? true : form.ticketUrl.trim() !== '';
@@ -105,11 +110,16 @@ const SubmitEventModal = ({ onClose }) => {
     };
 
     const next = () => {
-        if (step === 4 && form.isMultiDay) {
-            if (!validateDates()) return;
+        try {
+            if (step === 4 && form.isMultiDay) {
+                if (!validateDates()) return;
+            }
+            if (isStepValid()) setStep(prev => Math.min(prev + 1, TOTAL_STEPS));
+        } catch {
+            // Prevent white screen on any unexpected error
         }
-        if (isStepValid()) setStep(prev => Math.min(prev + 1, TOTAL_STEPS));
     };
+
     const back = () => setStep(prev => Math.max(prev - 1, 1));
 
     const handleSubmit = () => {
@@ -223,10 +233,10 @@ const SubmitEventModal = ({ onClose }) => {
                                         <input style={{ ...styles.input, marginBottom: '14px' }} type="datetime-local" value={form.endDate} onChange={e => { update('endDate', e.target.value); setDateError(''); }} />
 
                                         <label style={styles.label}>Daily doors open (same time each day)</label>
-                                        <input style={{ ...styles.input, marginBottom: '12px' }} placeholder="e.g. 6:00 PM" value={form.dailyStartTime} onChange={e => update('dailyStartTime', e.target.value)} />
+                                        <input style={{ ...styles.input, marginBottom: '12px' }} type="time" value={form.dailyStartTime} onChange={e => update('dailyStartTime', e.target.value)} />
 
                                         <label style={styles.label}>Daily doors close (same time each day)</label>
-                                        <input style={styles.input} placeholder="e.g. 11:00 PM" value={form.dailyEndTime} onChange={e => update('dailyEndTime', e.target.value)} />
+                                        <input style={styles.input} type="time" value={form.dailyEndTime} onChange={e => update('dailyEndTime', e.target.value)} />
 
                                         {dateError && <p style={styles.errorText}>{dateError}</p>}
                                     </>
