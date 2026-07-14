@@ -187,7 +187,14 @@ const SubmitEventModal = ({ onClose }) => {
         }
     };
 
-    const back = () => setStep(prev => Math.max(prev - 1, 1));
+    // Go back to previous step — skips ticket URL (6) and price (7) for Happy Hour
+    const back = () => {
+        let prevStep = step - 1;
+        if (form.eventType === 'happyhour' && (prevStep === 6 || prevStep === 7)) {
+            prevStep = 5;
+        }
+        setStep(Math.max(prevStep, 1));
+    };
 
     const handleSubmit = () => {
         setSubmitting(true);
