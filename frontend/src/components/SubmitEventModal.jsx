@@ -54,8 +54,24 @@ const SubmitEventModal = ({ onClose }) => {
         });
     };
 
-    // Validate multi-day date range — returns false and sets error message if invalid
-    const validateDates = () => {
+    // Pure date check — no state changes, safe to call during render
+    const areDatesValid = () => {
+        try {
+            if (!form.isMultiDay || !form.endDate || !form.eventDate) return true;
+            const start = new Date(form.eventDate);
+            const end = new Date(form.endDate);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) return true;
+            if (end <= start) return false;
+            const days = (end - start) / (1000 * 60 * 60 * 24);
+            if (days > 7) return false;
+            return true;
+        } catch {
+            return true;
+        }
+    };
+
+    // Shows error message — only called when user clicks Next, never during render
+    const validateDatesWithError = () => {
         try {
             if (!form.isMultiDay || !form.endDate || !form.eventDate) return true;
             const start = new Date(form.eventDate);
@@ -95,7 +111,8 @@ const SubmitEventModal = ({ onClose }) => {
                     if (form.isMultiDay) {
                         // All three fields required before we can validate dates
                         if (!form.endDate || !form.dailyStartTime || !form.dailyEndTime) return false;
-                        return validateDates();
+                        // Use areDatesValid — safe for render, no state changes
+                        return areDatesValid();
                     }
                     return true;
                 } catch {
@@ -115,7 +132,8 @@ const SubmitEventModal = ({ onClose }) => {
     const next = () => {
         try {
             if (step === 4 && form.isMultiDay) {
-                if (!validateDates()) return;
+                // Use validateDatesWithError to show error messages on click
+                if (!validateDatesWithError()) return;
             }
             if (isStepValid()) setStep(prev => Math.min(prev + 1, TOTAL_STEPS));
         } catch {
