@@ -271,10 +271,11 @@ const SubmitEventModal = ({ onClose }) => {
                             <>
                                 <label style={styles.label}>Days (e.g. Mon - Fri, Daily, Weekends)</label>
                                 <input style={{ ...styles.input, marginBottom: '12px' }} placeholder="e.g. Monday - Friday" value={form.happyHourDays} onChange={e => update('happyHourDays', e.target.value)} />
+                                {/* Time pickers for Happy Hour start and end times */}
                                 <label style={styles.label}>Start time</label>
-                                <input style={{ ...styles.input, marginBottom: '12px' }} placeholder="e.g. 4:00 PM" value={form.happyHourStart} onChange={e => update('happyHourStart', e.target.value)} />
+                                <input style={{ ...styles.input, marginBottom: '12px' }} type="time" value={form.happyHourStart} onChange={e => update('happyHourStart', e.target.value)} />
                                 <label style={styles.label}>End time</label>
-                                <input style={styles.input} placeholder="e.g. 7:00 PM" value={form.happyHourEnd} onChange={e => update('happyHourEnd', e.target.value)} />
+                                <input style={styles.input} type="time" value={form.happyHourEnd} onChange={e => update('happyHourEnd', e.target.value)} />
                             </>
                         ) : (
                             <>
