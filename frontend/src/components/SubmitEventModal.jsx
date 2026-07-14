@@ -169,14 +169,19 @@ const SubmitEventModal = ({ onClose }) => {
         }
     };
 
-    // Advance to next step — wrapped in try/catch to prevent crashes
+    // Advance to next step — skips ticket URL (6) and price (7) for Happy Hour
     const next = () => {
         try {
             if (step === 4 && form.isMultiDay) {
                 // Use validateDatesWithError to show error messages on click
                 if (!validateDatesWithError()) return;
             }
-            if (isStepValid()) setStep(prev => Math.min(prev + 1, TOTAL_STEPS));
+            // Skip ticket URL and price steps for Happy Hour — not applicable
+            let nextStep = step + 1;
+            if (form.eventType === 'happyhour' && (nextStep === 6 || nextStep === 7)) {
+                nextStep = 8;
+            }
+            if (isStepValid()) setStep(Math.min(nextStep, TOTAL_STEPS));
         } catch {
             // Silently catch any unexpected errors — keeps the form stable
         }
