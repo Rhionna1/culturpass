@@ -54,22 +54,27 @@ const SubmitEventModal = ({ onClose }) => {
         });
     };
 
-    // Validate multi-day date range
+    // Validate multi-day date range — returns false and sets error message if invalid
     const validateDates = () => {
-        if (!form.isMultiDay || !form.endDate) return true;
-        const start = new Date(form.eventDate);
-        const end = new Date(form.endDate);
-        if (end <= start) {
-            setDateError('End date must be after the start date.');
-            return false;
+        try {
+            if (!form.isMultiDay || !form.endDate || !form.eventDate) return true;
+            const start = new Date(form.eventDate);
+            const end = new Date(form.endDate);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) return true;
+            if (end <= start) {
+                setDateError('End date must be after the start date.');
+                return false;
+            }
+            const days = (end - start) / (1000 * 60 * 60 * 24);
+            if (days > 7) {
+                setDateError('Events cannot run longer than 7 days.');
+                return false;
+            }
+            setDateError('');
+            return true;
+        } catch {
+            return true;
         }
-        const days = (end - start) / (1000 * 60 * 60 * 24);
-        if (days > 7) {
-            setDateError('Events cannot run longer than 7 days.');
-            return false;
-        }
-        setDateError('');
-        return true;
     };
 
     const isStepValid = () => {
@@ -259,9 +264,9 @@ const SubmitEventModal = ({ onClose }) => {
                         </div>
                         {!form.isFree && (
                             <div style={styles.priceRow}>
-                                <input style={{ ...styles.input, flex: 1 }} placeholder="Min price e.g. 15" value={form.priceMin} onChange={e => update('priceMin', e.target.value)} type="number" />
+                                <input style={{ ...styles.input, flex: 1 }} placeholder="Min price e.g. 15" value={form.priceMin} onChange={e => update('priceMin', e.target.value)} type="number" min="0" />
                                 <span style={styles.priceDash}>—</span>
-                                <input style={{ ...styles.input, flex: 1 }} placeholder="Max price e.g. 35" value={form.priceMax} onChange={e => update('priceMax', e.target.value)} type="number" />
+                                <input style={{ ...styles.input, flex: 1 }} placeholder="Max price e.g. 35" value={form.priceMax} onChange={e => update('priceMax', e.target.value)} type="number" min="0" />
                             </div>
                         )}
                     </StepWrapper>
