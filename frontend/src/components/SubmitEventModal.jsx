@@ -223,10 +223,10 @@ const SubmitEventModal = ({ onClose }) => {
                                         <input style={{ ...styles.input, marginBottom: '14px' }} type="datetime-local" value={form.endDate} onChange={e => { update('endDate', e.target.value); setDateError(''); }} />
 
                                         <label style={styles.label}>Daily doors open (same time each day)</label>
-                                        <input style={{ ...styles.input, marginBottom: '12px' }} type="time" value={form.dailyStartTime} onChange={e => update('dailyStartTime', e.target.value)} />
+                                        <input style={{ ...styles.input, marginBottom: '12px' }} placeholder="e.g. 6:00 PM" value={form.dailyStartTime} onChange={e => update('dailyStartTime', e.target.value)} />
 
                                         <label style={styles.label}>Daily doors close (same time each day)</label>
-                                        <input style={styles.input} type="time" value={form.dailyEndTime} onChange={e => update('dailyEndTime', e.target.value)} />
+                                        <input style={styles.input} placeholder="e.g. 11:00 PM" value={form.dailyEndTime} onChange={e => update('dailyEndTime', e.target.value)} />
 
                                         {dateError && <p style={styles.errorText}>{dateError}</p>}
                                     </>
