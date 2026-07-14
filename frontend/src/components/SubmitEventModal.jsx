@@ -54,6 +54,15 @@ const SubmitEventModal = ({ onClose }) => {
         });
     };
 
+    // Convert 24-hour time to 12-hour format — e.g. 19:55 → 7:55 PM
+    const formatTimeDisplay = (timeStr) => {
+        if (!timeStr) return '—';
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const displayHours = hours % 12 || 12;
+        return `${displayHours}:${String(minutes).padStart(2, '0')} ${period}`;
+    };
+
     // Checks if close time is valid relative to open time
     // Allows late night closes between 1:00 AM and 6:30 AM (e.g. clubs closing at 2am)
     const isValidCloseTime = (openTime, closeTime) => {
@@ -360,7 +369,8 @@ const SubmitEventModal = ({ onClose }) => {
                                 <>
                                     <ReviewRow label="Start date" value={formatDateDisplay(form.eventDate)} />
                                     <ReviewRow label="End date" value={formatDateDisplay(form.endDate)} />
-                                    <ReviewRow label="Daily hours" value={`${form.dailyStartTime} – ${form.dailyEndTime}`} />
+                                    {/* Display daily hours in 12-hour format */}
+                                    <ReviewRow label="Daily hours" value={`${formatTimeDisplay(form.dailyStartTime)} – ${formatTimeDisplay(form.dailyEndTime)}`} />
                                 </>
                             ) : (
                                 <ReviewRow label="Date" value={formatDateDisplay(form.eventDate)} />
