@@ -376,7 +376,8 @@ const SubmitEventModal = ({ onClose }) => {
                                 <>
                                     <ReviewRow label="Business" value={form.businessName} />
                                     <ReviewRow label="Days" value={form.happyHourDays} />
-                                    <ReviewRow label="Hours" value={`${form.happyHourStart} – ${form.happyHourEnd}`} />
+                                    {/* Display Happy Hour times in 12-hour format */}
+                                    <ReviewRow label="Hours" value={`${formatTimeDisplay(form.happyHourStart)} – ${formatTimeDisplay(form.happyHourEnd)}`} />
                                 </>
                             ) : form.isMultiDay ? (
                                 <>
@@ -390,8 +391,13 @@ const SubmitEventModal = ({ onClose }) => {
                             )}
                             <ReviewRow label="Venue" value={form.venueName} />
                             <ReviewRow label="Address" value={`${form.address}, ${form.city}, ${form.state} ${form.zipCode}`} />
-                            <ReviewRow label="Ticket link" value={form.ticketUrl} />
-                            <ReviewRow label="Price" value={form.isFree ? 'Free' : `$${form.priceMin} – $${form.priceMax}`} />
+                            {/* Only show ticket and price for regular events — not Happy Hour */}
+                            {form.eventType !== 'happyhour' && (
+                                <>
+                                    <ReviewRow label="Ticket link" value={form.ticketUrl} />
+                                    <ReviewRow label="Price" value={form.isFree ? 'Free' : `$${form.priceMin} – $${form.priceMax}`} />
+                                </>
+                            )}
                         </div>
                         <p style={styles.reviewNote}>Your event will be reviewed by our team and posted within 48 hours if approved.</p>
                     </StepWrapper>
