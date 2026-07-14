@@ -54,6 +54,27 @@ const SubmitEventModal = ({ onClose }) => {
         });
     };
 
+    // Checks if close time is valid relative to open time
+    // Allows late night closes between 1:00 AM and 6:30 AM (e.g. clubs closing at 2am)
+    const isValidCloseTime = (openTime, closeTime) => {
+        try {
+            const [openH, openM] = openTime.split(':').map(Number);
+            const [closeH, closeM] = closeTime.split(':').map(Number);
+
+            // Convert to minutes for easy comparison
+            const openMins = openH * 60 + openM;
+            const closeMins = closeH * 60 + closeM;
+
+            // Allow late night closes between 1:00 AM (60 mins) and 6:30 AM (390 mins)
+            const isLateNightClose = closeMins >= 60 && closeMins <= 390;
+
+            // Close must be after open OR be a valid late night close
+            return closeMins > openMins || isLateNightClose;
+        } catch {
+            return true;
+        }
+    };
+
     // Pure date check — no state changes, safe to call during render
     const areDatesValid = () => {
         try {
@@ -64,6 +85,10 @@ const SubmitEventModal = ({ onClose }) => {
             if (end <= start) return false;
             const days = (end - start) / (1000 * 60 * 60 * 24);
             if (days > 7) return false;
+            // Validate close time is after open time unless it's a late night close (1am-6:30am)
+            if (form.dailyStartTime && form.dailyEndTime) {
+                if (!isValidCloseTime(form.dailyStartTime, form.dailyEndTime)) return false;
+            }
             return true;
         } catch {
             return true;
@@ -85,6 +110,13 @@ const SubmitEventModal = ({ onClose }) => {
             if (days > 7) {
                 setDateError('Events cannot run longer than 7 days.');
                 return false;
+            }
+            // Check close time is valid — allow late night closes between 1am and 6:30am
+            if (form.dailyStartTime && form.dailyEndTime) {
+                if (!isValidCloseTime(form.dailyStartTime, form.dailyEndTime)) {
+                    setDateError('Doors close time must be after doors open time. Late night closes (1:00 AM – 6:30 AM) are allowed.');
+                    return false;
+                }
             }
             setDateError('');
             return true;
