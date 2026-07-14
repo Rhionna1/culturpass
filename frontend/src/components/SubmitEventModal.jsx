@@ -111,6 +111,7 @@ const SubmitEventModal = ({ onClose }) => {
         }
     };
 
+    // Advance to next step — wrapped in try/catch to prevent crashes
     const next = () => {
         try {
             if (step === 4 && form.isMultiDay) {
@@ -118,7 +119,7 @@ const SubmitEventModal = ({ onClose }) => {
             }
             if (isStepValid()) setStep(prev => Math.min(prev + 1, TOTAL_STEPS));
         } catch {
-            // Prevent white screen on any unexpected error
+            // Silently catch any unexpected errors — keeps the form stable
         }
     };
 
