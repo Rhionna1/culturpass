@@ -56,4 +56,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     // Find all events by business name — used for Happy Hour ban system
     List<Event> findByBusinessName(String businessName);
+
+    // Find all events submitted by a specific user — includes all statuses for My Events page
+    List<Event> findByOrganizerIdOrderByCreatedAtDesc(UUID organizerId);
 }
