@@ -145,6 +145,13 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
+    // GET /api/events/my-events?organizerId={id} — get all events submitted by a user
+    // Returns all statuses (pending, active, rejected) for the My Events page
+    @GetMapping("/my-events")
+    public ResponseEntity<List<Event>> getMyEvents(@RequestParam UUID organizerId) {
+        return ResponseEntity.ok(eventService.getMyEvents(organizerId));
+    }
+
     // PUT /api/events/{id}/mark-notification-read — user dismisses their notification
     @PutMapping("/{id}/mark-notification-read")
     public ResponseEntity<Event> markNotificationRead(@PathVariable UUID id) {
