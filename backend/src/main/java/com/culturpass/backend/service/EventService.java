@@ -118,11 +118,14 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    // Admin only — reject an event
-    public Event rejectEvent(UUID id) {
+    // Admin only — approve an event and notify the submitter
+    public Event approveEvent(UUID id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Event not found"));
-        event.setStatus("rejected");
+        event.setStatus("active");
+        // Set notification message for the submitter to see on My Events page
+        event.setNotificationMessage("🎉 Your event \"" + event.getTitle() + "\" has been approved and is now live!");
+        event.setNotificationRead(false);
         return eventRepository.save(event);
     }
 
