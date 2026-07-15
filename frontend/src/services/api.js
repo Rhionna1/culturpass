@@ -108,6 +108,11 @@ export const getRacismComplaints = () => api.get('/complaints/racism');
 export const reviewComplaint = (id, adminNotes, reviewedBy) =>
     api.put(`/complaints/${id}/review`, { adminNotes, reviewedBy });
 
+// ── Notification calls ────────────────────────────────────
+
+// Mark an event notification as read — called when user dismisses the banner
+export const markNotificationRead = (eventId) => api.put(`/events/${eventId}/mark-notification-read`);
+
 // ── Health check ─────────────────────────────────────────
 
 export const checkHealth = () => api.get('/health');
