@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { createEvent, getCategories } from '../services/api.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const TOTAL_STEPS = 9;
 
 // SubmitEventModal — multi-step event submission form
 const SubmitEventModal = ({ onClose }) => {
+    // Get the logged-in user so we can set them as the event organizer
+    const { user } = useAuth();
     const [categories, setCategories] = useState([]);
     const [dateError, setDateError] = useState('');
 
@@ -222,6 +225,8 @@ const SubmitEventModal = ({ onClose }) => {
             happyHourEnd: form.eventType === 'happyhour' ? form.happyHourEnd : null,
             source: 'user',
             status: 'pending',
+            // Set the logged-in user as the organizer so events appear in My Events
+            organizerId: user?.id || null,
         };
         createEvent(payload)
             .then(() => { setSubmitting(false); setSubmitted(true); })
