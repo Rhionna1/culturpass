@@ -26,8 +26,8 @@ const MyEventsPage = () => {
     const fetchData = () => {
         setLoading(true);
         Promise.all([
-            // Fetch ALL events for this user including pending and rejected
-            api.get('/events/my-events'),
+            // Fetch all events submitted by this user — includes pending, active, and rejected
+            api.get(`/events/my-events?organizerId=${user.id}`),
             user?.id ? getSavedEvents(user.id) : Promise.resolve({ data: [] }),
         ]).then(([eventsRes, savedRes]) => {
             setSubmittedEvents(eventsRes.data);
