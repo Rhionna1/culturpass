@@ -16,6 +16,7 @@ public class EventController {
 
     private final EventService eventService;
     private final com.culturpass.backend.repository.EventRepository eventRepository;
+    private final com.culturpass.backend.repository.UserRepository userRepository;
 
     // GET /api/events — get all events
     @GetMapping
@@ -105,6 +106,11 @@ public class EventController {
             }
 
             // Handle location — find or create
+            // Set the organizer — links the event to the user who submitted it
+            if (body.get("organizerId") != null) {
+                userRepository.findById(UUID.fromString(body.get("organizerId").toString()))
+                        .ifPresent(event::setOrganizer);
+            }
             String venueName = body.get("venueName") != null ? body.get("venueName").toString() : null;
             String address = body.get("address") != null ? body.get("address").toString() : null;
             String city = body.get("city") != null ? body.get("city").toString() : null;
