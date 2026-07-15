@@ -14,9 +14,26 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final com.culturpass.backend.repository.EventRepository eventRepository;
 
-    // Get all active categories for the frontend dropdown and filter pills — always alphabetical
+    // Get all active categories — auto-expires temporary ones before returning
+    // Temporary categories bypass the events-exist guard when they expire
     public List<Category> getActiveCategories() {
+        // Auto soft-delete any expired temporary categories
+        autoExpireCategories();
         return categoryRepository.findByDeletedFalseOrderByNameAsc();
+    }
+
+    // Checks all temporary categories and soft-deletes any that have passed their expiration date
+    private void autoExpireCategories() {
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        categoryRepository.findByDeletedFalseOrderByNameAsc().stream()
+                .filter(cat -> Boolean.TRUE.equals(cat.getIsTemporary())
+                        && cat.getExpiresAt() != null
+                        && cat.getExpiresAt().isBefore(now))
+                .forEach(cat -> {
+                    // Bypass the events-exist guard — temporary categories are expected to have events
+                    cat.setDeleted(true);
+                    categoryRepository.save(cat);
+                });
     }
 
     // Get all soft-deleted categories — for admin restore functionality — always alphabetical
@@ -25,13 +42,16 @@ public class CategoryService {
     }
 
     // Add a new category — admin only
-    public Category addCategory(String name) {
+    // Supports optional temporary flag and expiration date for seasonal categories
+    public Category addCategory(String name, Boolean isTemporary, java.time.LocalDateTime expiresAt) {
         if (categoryRepository.existsByName(name)) {
             throw new IllegalStateException("Category already exists: " + name);
         }
         Category category = Category.builder()
                 .name(name)
                 .deleted(false)
+                .isTemporary(isTemporary != null && isTemporary)
+                .expiresAt(expiresAt)
                 .displayOrder(0)
                 .build();
         return categoryRepository.save(category);
