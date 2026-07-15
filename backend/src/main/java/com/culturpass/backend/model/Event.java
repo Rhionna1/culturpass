@@ -82,6 +82,15 @@ public class Event {
     @Column(name = "is_featured")
     private Boolean isFeatured = false;
 
+    // Notification message for the event submitter — set when admin approves or rejects
+    @Column(name = "notification_message")
+    private String notificationMessage;
+
+    // Whether the submitter has read the notification
+    @Builder.Default
+    @Column(name = "notification_read")
+    private Boolean notificationRead = false;
+
     // Event type — 'event' for regular events, 'happyhour' for permanent happy hour listings
     @Builder.Default
     @Column(name = "event_type")

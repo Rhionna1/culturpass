@@ -51,6 +51,8 @@ CREATE TABLE IF NOT EXISTS events (
     capacity     INTEGER,
     status       VARCHAR(50)  DEFAULT 'active',
     is_featured  BOOLEAN      DEFAULT false,
+    notification_message TEXT,
+    notification_read    BOOLEAN DEFAULT false,
     event_type      VARCHAR(50)  DEFAULT 'event',
     business_name   VARCHAR(255),
     happy_hour_days VARCHAR(255),
