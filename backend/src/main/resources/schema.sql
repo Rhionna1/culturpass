@@ -82,10 +82,13 @@ CREATE TABLE IF NOT EXISTS saved_events (
     );
 
 -- Categories table: stores event categories managed dynamically by admins
+-- Supports temporary/seasonal categories with auto-expiration
 CREATE TABLE IF NOT EXISTS categories (
                                           id            SERIAL PRIMARY KEY,
                                           name          VARCHAR(100) UNIQUE NOT NULL,
     deleted       BOOLEAN DEFAULT false NOT NULL,
+    is_temporary  BOOLEAN DEFAULT false,
+    expires_at    TIMESTAMPTZ,
     display_order INTEGER DEFAULT 0,
     created_at    TIMESTAMPTZ DEFAULT NOW()
     );

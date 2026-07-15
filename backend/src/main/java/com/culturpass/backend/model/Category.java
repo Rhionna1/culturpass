@@ -27,6 +27,15 @@ public class Category {
     @Column(nullable = false)
     private Boolean deleted = false;
 
+    // Whether this is a temporary/seasonal category (e.g. Juneteenth, Pride)
+    @Builder.Default
+    @Column(name = "is_temporary")
+    private Boolean isTemporary = false;
+
+    // Expiration date — temporary categories auto soft-delete after this date
+    @Column(name = "expires_at")
+    private java.time.LocalDateTime expiresAt;
+
     // Display order for the category pills
     @Builder.Default
     @Column(name = "display_order")
