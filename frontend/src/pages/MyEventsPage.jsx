@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import api from '../services/api.js';
-import { getSavedEvents, unsaveEvent } from '../services/api.js';
+import { getSavedEvents, unsaveEvent, markNotificationRead } from '../services/api.js';
 
-// MyEventsPage — shows submitted and saved events for the logged in user
+// MyEventsPage — shows submitted and saved events for the logged-in user
 const MyEventsPage = () => {
     const { isLoggedIn, user } = useAuth();
     const navigate = useNavigate();
@@ -26,7 +26,8 @@ const MyEventsPage = () => {
     const fetchData = () => {
         setLoading(true);
         Promise.all([
-            api.get('/events'),
+            // Fetch ALL events for this user including pending and rejected
+            api.get('/events/my-events'),
             user?.id ? getSavedEvents(user.id) : Promise.resolve({ data: [] }),
         ]).then(([eventsRes, savedRes]) => {
             setSubmittedEvents(eventsRes.data);
@@ -71,6 +72,19 @@ const MyEventsPage = () => {
             .catch(() => {});
     };
 
+    // Dismiss a notification — marks it as read so it won't show again
+    const handleDismissNotification = (e, eventId) => {
+        e.stopPropagation();
+        markNotificationRead(eventId)
+            .then(() => {
+                // Update local state so banner disappears immediately without a refetch
+                setSubmittedEvents(prev => prev.map(ev =>
+                    ev.id === eventId ? { ...ev, notificationRead: true } : ev
+                ));
+            })
+            .catch(() => {});
+    };
+
     const renderEventCard = (event, showStatus = false, showUnsave = false) => (
         <div
             key={event.id}
@@ -82,6 +96,21 @@ const MyEventsPage = () => {
                 backgroundColor: getCategoryColor(event.category),
             }} />
             <div style={styles.cardBody}>
+                {/* Notification banner — shows when admin approves or rejects the event */}
+                {showStatus && event.notificationMessage && !event.notificationRead && (
+                    <div style={{
+                        ...styles.notificationBanner,
+                        ...(event.status === 'active' ? styles.notificationApproved : styles.notificationRejected),
+                    }}>
+                        <span style={styles.notificationText}>{event.notificationMessage}</span>
+                        <button
+                            style={styles.notificationDismiss}
+                            onClick={e => handleDismissNotification(e, event.id)}
+                        >
+                            ✕
+                        </button>
+                    </div>
+                )}
                 <div style={styles.cardTop}>
                     <span style={styles.category}>{event.category}</span>
                     {showStatus && (
@@ -308,6 +337,39 @@ const styles = {
         color: '#D85A30',
         cursor: 'pointer',
         marginLeft: 'auto',
+    },
+    // Notification banner styles
+    notificationBanner: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        padding: '8px 12px',
+        borderRadius: '6px',
+        marginBottom: '10px',
+        gap: '8px',
+    },
+    notificationApproved: {
+        backgroundColor: '#EAF3DE',
+        border: '0.5px solid #C0DD97',
+    },
+    notificationRejected: {
+        backgroundColor: '#FCEBEB',
+        border: '0.5px solid #F7C1C1',
+    },
+    notificationText: {
+        fontSize: '11px',
+        color: '#3D2B1F',
+        lineHeight: '1.5',
+        flex: 1,
+    },
+    notificationDismiss: {
+        background: 'transparent',
+        border: 'none',
+        fontSize: '12px',
+        color: '#8B6A56',
+        cursor: 'pointer',
+        flexShrink: 0,
+        padding: '0',
     },
 };
 
