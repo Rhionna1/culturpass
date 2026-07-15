@@ -110,14 +110,6 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
-    // Admin only — approve an event
-    public Event approveEvent(UUID id) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
-        event.setStatus("active");
-        return eventRepository.save(event);
-    }
-
     // Admin only — approve an event and notify the submitter
     public Event approveEvent(UUID id) {
         Event event = eventRepository.findById(id)
@@ -125,6 +117,17 @@ public class EventService {
         event.setStatus("active");
         // Set notification message for the submitter to see on My Events page
         event.setNotificationMessage("🎉 Your event \"" + event.getTitle() + "\" has been approved and is now live!");
+        event.setNotificationRead(false);
+        return eventRepository.save(event);
+    }
+
+    // Admin only — reject an event and notify the submitter
+    public Event rejectEvent(UUID id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        event.setStatus("rejected");
+        // Set notification message for the submitter to see on My Events page
+        event.setNotificationMessage("Your event \"" + event.getTitle() + "\" was not approved at this time. Please review our guidelines and resubmit.");
         event.setNotificationRead(false);
         return eventRepository.save(event);
     }
