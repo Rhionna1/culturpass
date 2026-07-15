@@ -189,4 +189,9 @@ public class EventService {
     public List<Event> searchEvents(String keyword) {
         return eventRepository.searchByKeyword(keyword);
     }
+
+    // Get all events submitted by a specific user — includes pending, active, and rejected
+    public List<Event> getMyEvents(UUID organizerId) {
+        return eventRepository.findByOrganizerIdOrderByCreatedAtDesc(organizerId);
+    }
 }
