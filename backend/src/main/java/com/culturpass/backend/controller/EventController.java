@@ -15,6 +15,7 @@ import java.util.UUID;
 public class EventController {
 
     private final EventService eventService;
+    private final com.culturpass.backend.repository.EventRepository eventRepository;
 
     // GET /api/events — get all events
     @GetMapping
@@ -142,5 +143,17 @@ public class EventController {
         }
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // PUT /api/events/{id}/mark-notification-read — user dismisses their notification
+    @PutMapping("/{id}/mark-notification-read")
+    public ResponseEntity<Event> markNotificationRead(@PathVariable UUID id) {
+        return eventRepository.findById(id)
+                .map(event -> {
+                    // Mark notification as read so it doesn't show again
+                    event.setNotificationRead(true);
+                    return ResponseEntity.ok(eventRepository.save(event));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
