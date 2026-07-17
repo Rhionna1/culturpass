@@ -10,6 +10,10 @@ const CategoryManager = () => {
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('active');
 
+    // State for temporary category fields
+    const [isTemporary, setIsTemporary] = useState(false);
+    const [expiresAt, setExpiresAt] = useState('');
+
     // Confirmation state — tracks how many times admin has confirmed a delete
     const [confirmingDelete, setConfirmingDelete] = useState(null);
     const [confirmCount, setConfirmCount] = useState(0);
@@ -30,12 +34,20 @@ const CategoryManager = () => {
         }).catch(() => setLoading(false));
     };
 
-    // Handle adding a new category
+    // Handle adding a new category — supports temporary categories with expiration dates
     const handleAdd = () => {
         if (!newCategoryName.trim()) return;
-        addCategory(newCategoryName.trim())
+        // Temporary categories must have an expiration date
+        if (isTemporary && !expiresAt) {
+            setError('Please set an expiration date for temporary categories.');
+            return;
+        }
+        addCategory(newCategoryName.trim(), isTemporary, expiresAt || null)
             .then(() => {
+                // Reset all fields after successful add
                 setNewCategoryName('');
+                setIsTemporary(false);
+                setExpiresAt('');
                 setError('');
                 fetchCategories();
             })
