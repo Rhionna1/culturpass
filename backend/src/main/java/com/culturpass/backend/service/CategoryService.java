@@ -42,11 +42,23 @@ public class CategoryService {
     }
 
     // Add a new category — admin only
-    // Supports optional temporary flag and expiration date for seasonal categories
+    // If a deleted category with the same name exists, restore it instead of creating a duplicate
     public Category addCategory(String name, Boolean isTemporary, java.time.LocalDateTime expiresAt) {
-        if (categoryRepository.existsByName(name)) {
-            throw new IllegalStateException("Category already exists: " + name);
+        // Check if a deleted category with this name already exists
+        java.util.Optional<Category> existing = categoryRepository.findByName(name);
+        if (existing.isPresent()) {
+            Category cat = existing.get();
+            if (cat.getDeleted()) {
+                // Restore it with the new settings instead of throwing an error
+                cat.setDeleted(false);
+                cat.setIsTemporary(isTemporary != null && isTemporary);
+                cat.setExpiresAt(expiresAt);
+                return categoryRepository.save(cat);
+            } else {
+                throw new IllegalStateException("Category already exists and is active: " + name);
+            }
         }
+        // Create a brand new category
         Category category = Category.builder()
                 .name(name)
                 .deleted(false)
