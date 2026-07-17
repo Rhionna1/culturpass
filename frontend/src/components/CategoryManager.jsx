@@ -95,11 +95,32 @@ const CategoryManager = () => {
         setConfirmCount(0);
     };
 
-    // Restore a deleted category
+    // Restore a deleted category as permanent
     const handleRestore = (id) => {
         restoreCategory(id)
-            .then(() => fetchCategories())
+            .then(() => {
+                setRestoringId(null);
+                setRestoreAsTemp(false);
+                setRestoreExpiresAt('');
+                fetchCategories();
+            })
             .catch(() => setError('Could not restore category.'));
+    };
+
+    // Restore a deleted category as temporary with an expiration date
+    const handleRestoreAsTemporary = (id) => {
+        if (!restoreExpiresAt) {
+            setError('Please set an expiration date.');
+            return;
+        }
+        restoreAsTemporary(id, restoreExpiresAt)
+            .then(() => {
+                setRestoringId(null);
+                setRestoreAsTemp(false);
+                setRestoreExpiresAt('');
+                fetchCategories();
+            })
+            .catch(() => setError('Could not restore category as temporary.'));
     };
 
     const getDeleteBtnLabel = (category) => {
