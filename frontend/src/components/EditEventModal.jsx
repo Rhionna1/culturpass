@@ -258,6 +258,73 @@ const EditEventModal = ({ event, onClose, onSaved }) => {
                     />
                 </div>
 
+                {/* Reassign organizer — expandable section */}
+                <div style={styles.expandableSection}>
+                    <button
+                        style={styles.expandHeader}
+                        onClick={() => setReassignOpen(!reassignOpen)}
+                    >
+                        <span style={styles.expandLabel}>Reassign organizer</span>
+                        <i
+                            className="ti ti-chevron-down"
+                            style={{
+                                fontSize: '14px',
+                                color: '#8B6A56',
+                                transform: reassignOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transition: 'transform 0.2s',
+                            }}
+                            aria-hidden="true"
+                        />
+                    </button>
+
+                    {/* Expanded search content */}
+                    {reassignOpen && (
+                        <div style={styles.expandBody}>
+                            <p style={styles.expandHint}>
+                                Search for a registered user to assign as the event organizer.
+                            </p>
+
+                            {/* Search row */}
+                            <div style={styles.searchRow}>
+                                <input
+                                    style={styles.searchInput}
+                                    placeholder="Name or email..."
+                                    value={userSearch}
+                                    onChange={e => setUserSearch(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && handleUserSearch()}
+                                />
+                                <button style={styles.searchBtn} onClick={handleUserSearch}>
+                                    Search
+                                </button>
+                            </div>
+
+                            {/* Success message */}
+                            {reassignSuccess && (
+                                <p style={styles.reassignSuccess}>{reassignSuccess}</p>
+                            )}
+
+                            {/* Search results */}
+                            {userResults.map(user => (
+                                <div key={user.id} style={styles.userPill}>
+                                    <div style={styles.userAvatar}>
+                                        {user.displayName?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div style={styles.userInfo}>
+                                        <p style={styles.userName}>{user.displayName}</p>
+                                        <p style={styles.userEmail}>{user.email}</p>
+                                    </div>
+                                    <button
+                                        style={styles.assignBtn}
+                                        onClick={() => handleReassign(user.id, user.displayName)}
+                                    >
+                                        Assign
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
                 {/* Save button */}
                 <button
                     style={{
@@ -403,6 +470,122 @@ const styles = {
         cursor: 'pointer',
         fontFamily: 'inherit',
         marginTop: '8px',
+    },
+    expandableSection: {
+        border: '0.5px solid #D4B8A8',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        marginBottom: '14px',
+    },
+    expandHeader: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '10px 14px',
+        backgroundColor: '#F5EBE0',
+        border: 'none',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+    },
+    expandLabel: {
+        fontSize: '12px',
+        fontWeight: '500',
+        color: '#3D2B1F',
+    },
+    expandBody: {
+        padding: '12px 14px',
+        borderTop: '0.5px solid #D4B8A8',
+    },
+    expandHint: {
+        fontSize: '11px',
+        color: '#8B6A56',
+        marginBottom: '10px',
+        lineHeight: '1.5',
+    },
+    searchRow: {
+        display: 'flex',
+        gap: '8px',
+        marginBottom: '10px',
+    },
+    searchInput: {
+        flex: 1,
+        padding: '8px 12px',
+        fontSize: '13px',
+        color: '#3D2B1F',
+        backgroundColor: '#FFFFFF',
+        border: '0.5px solid #D4B8A8',
+        borderRadius: '6px',
+        outline: 'none',
+        fontFamily: 'inherit',
+    },
+    searchBtn: {
+        backgroundColor: '#D85A30',
+        color: '#FFFFFF',
+        border: 'none',
+        borderRadius: '6px',
+        padding: '8px 14px',
+        fontSize: '12px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        flexShrink: 0,
+    },
+    reassignSuccess: {
+        fontSize: '12px',
+        color: '#27500A',
+        backgroundColor: '#EAF3DE',
+        padding: '7px 10px',
+        borderRadius: '6px',
+        marginBottom: '10px',
+    },
+    userPill: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        padding: '8px 10px',
+        backgroundColor: '#F5EBE0',
+        border: '0.5px solid #E8D5C8',
+        borderRadius: '6px',
+        marginBottom: '6px',
+    },
+    userAvatar: {
+        width: '28px',
+        height: '28px',
+        borderRadius: '50%',
+        backgroundColor: '#E6F1FB',
+        color: '#0C447C',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '11px',
+        fontWeight: '500',
+        flexShrink: 0,
+    },
+    userInfo: {
+        flex: 1,
+        minWidth: 0,
+    },
+    userName: {
+        fontSize: '12px',
+        fontWeight: '500',
+        color: '#3D2B1F',
+    },
+    userEmail: {
+        fontSize: '11px',
+        color: '#8B6A56',
+    },
+    assignBtn: {
+        backgroundColor: '#EAF3DE',
+        color: '#27500A',
+        border: '0.5px solid #C0DD97',
+        borderRadius: '5px',
+        padding: '4px 10px',
+        fontSize: '11px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        flexShrink: 0,
     },
 };
 
