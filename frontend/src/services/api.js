@@ -81,7 +81,9 @@ export const getCategories = () => api.get('/categories');
 export const getDeletedCategories = () => api.get('/categories/deleted');
 
 // Add a new category — admin only
-export const addCategory = (name) => api.post('/categories', { name });
+// Supports optional isTemporary flag and expiresAt date for seasonal categories
+export const addCategory = (name, isTemporary = false, expiresAt = null) =>
+    api.post('/categories', { name, isTemporary, expiresAt });
 
 // Soft-delete a category — admin only
 export const deleteCategory = (id) => api.delete(`/categories/${id}`);
