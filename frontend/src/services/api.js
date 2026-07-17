@@ -91,6 +91,10 @@ export const deleteCategory = (id) => api.delete(`/categories/${id}`);
 // Restore a deleted category — admin only
 export const restoreCategory = (id) => api.put(`/categories/${id}/restore`);
 
+// Restore a deleted category as temporary with a new expiration date — admin only
+export const restoreAsTemporary = (id, expiresAt) =>
+    api.put(`/categories/${id}/restore-as-temporary`, { expiresAt });
+
 // ── Complaint calls ───────────────────────────────────────
 
 // Submit a complaint from the contact modal
