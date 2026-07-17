@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import api from '../services/api.js';
+import { searchUsers, reassignOrganizer } from '../services/api.js';
 
 // EditEventModal — allows admin to edit any event's details
 const EditEventModal = ({ event, onClose, onSaved }) => {
@@ -24,8 +25,34 @@ const EditEventModal = ({ event, onClose, onSaved }) => {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
+    // State for the reassign organizer expandable section
+    const [reassignOpen, setReassignOpen] = useState(false);
+    const [userSearch, setUserSearch] = useState('');
+    const [userResults, setUserResults] = useState([]);
+    const [reassignSuccess, setReassignSuccess] = useState('');
+
     // Update a single form field
     const update = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
+
+    // Search for users by name or email
+    const handleUserSearch = () => {
+        if (!userSearch.trim()) return;
+        searchUsers(userSearch.trim())
+            .then(res => setUserResults(res.data))
+            .catch(() => setError('Could not search users.'));
+    };
+
+    // Reassign the event organizer to a selected user
+    const handleReassign = (userId, displayName) => {
+        reassignOrganizer(event.id, userId)
+            .then(() => {
+                setReassignSuccess(`Organizer reassigned to ${displayName}`);
+                setUserResults([]);
+                setUserSearch('');
+                setTimeout(() => setReassignSuccess(''), 3000);
+            })
+            .catch(() => setError('Could not reassign organizer.'));
+    };
 
     // Submit the edited event to the admin API
     const handleSave = () => {
