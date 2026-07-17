@@ -248,14 +248,69 @@ const CategoryManager = () => {
                         <p style={styles.empty}>No deleted categories.</p>
                     ) : (
                         deletedCategories.map(cat => (
-                            <div key={cat.id} style={styles.categoryRow}>
-                                <span style={{ ...styles.categoryName, color: '#8B6A56' }}>{cat.name}</span>
-                                <button
-                                    style={styles.restoreBtn}
-                                    onClick={() => handleRestore(cat.id)}
-                                >
-                                    Restore
-                                </button>
+                            <div key={cat.id}>
+                                <div style={styles.categoryRow}>
+                                    <span style={{ ...styles.categoryName, color: '#8B6A56' }}>{cat.name}</span>
+                                    {/* Show restore options button or cancel */}
+                                    {restoringId === cat.id ? (
+                                        <button
+                                            style={styles.cancelBtn}
+                                            onClick={() => { setRestoringId(null); setRestoreAsTemp(false); setRestoreExpiresAt(''); }}
+                                        >
+                                            Cancel
+                                        </button>
+                                    ) : (
+                                        <button
+                                            style={styles.restoreBtn}
+                                            onClick={() => setRestoringId(cat.id)}
+                                        >
+                                            Restore
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Inline restore form — shows when Restore is clicked */}
+                                {restoringId === cat.id && (
+                                    <div style={styles.restoreForm}>
+                                        {/* Restore as permanent */}
+                                        <button
+                                            style={styles.restorePermanentBtn}
+                                            onClick={() => handleRestore(cat.id)}
+                                        >
+                                            Restore as permanent
+                                        </button>
+
+                                        {/* Restore as temporary */}
+                                        <button
+                                            style={{
+                                                ...styles.restoreTempBtn,
+                                                ...(restoreAsTemp ? styles.restoreTempBtnActive : {}),
+                                            }}
+                                            onClick={() => setRestoreAsTemp(!restoreAsTemp)}
+                                        >
+                                            ⏳ Restore as temporary
+                                        </button>
+
+                                        {/* Expiration date picker — shows when restore as temp is selected */}
+                                        {restoreAsTemp && (
+                                            <div style={styles.restoreTempForm}>
+                                                <label style={styles.tempLabel}>Auto-deletes on:</label>
+                                                <input
+                                                    style={styles.expiresInput}
+                                                    type="datetime-local"
+                                                    value={restoreExpiresAt}
+                                                    onChange={e => setRestoreExpiresAt(e.target.value)}
+                                                />
+                                                <button
+                                                    style={styles.confirmTempBtn}
+                                                    onClick={() => handleRestoreAsTemporary(cat.id)}
+                                                >
+                                                    Confirm
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         ))
                     )}
@@ -362,16 +417,6 @@ const styles = {
         padding: '7px 16px',
         fontSize: '12px',
         fontWeight: '500',
-        cursor: 'pointer',
-        fontFamily: 'inherit',
-    },
-    cancelBtn: {
-        backgroundColor: 'transparent',
-        color: '#8B6A56',
-        border: '0.5px solid #D4B8A8',
-        borderRadius: '6px',
-        padding: '7px 16px',
-        fontSize: '12px',
         cursor: 'pointer',
         fontFamily: 'inherit',
     },
@@ -486,6 +531,70 @@ const styles = {
         padding: '2px 6px',
         borderRadius: '4px',
         width: 'fit-content',
+    },
+    restoreForm: {
+        backgroundColor: '#F5EBE0',
+        border: '0.5px solid #E8D5C8',
+        borderRadius: '6px',
+        padding: '10px 12px',
+        marginTop: '6px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+    },
+    restorePermanentBtn: {
+        backgroundColor: '#EAF3DE',
+        color: '#27500A',
+        border: '0.5px solid #C0DD97',
+        borderRadius: '6px',
+        padding: '6px 12px',
+        fontSize: '11px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+    },
+    restoreTempBtn: {
+        backgroundColor: '#FAEEDA',
+        color: '#633806',
+        border: '0.5px solid #FAC775',
+        borderRadius: '6px',
+        padding: '6px 12px',
+        fontSize: '11px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+    },
+    restoreTempBtnActive: {
+        backgroundColor: '#D85A30',
+        color: '#FFFFFF',
+        borderColor: '#D85A30',
+    },
+    restoreTempForm: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '6px',
+    },
+    confirmTempBtn: {
+        backgroundColor: '#D85A30',
+        color: '#FFFFFF',
+        border: 'none',
+        borderRadius: '6px',
+        padding: '6px 14px',
+        fontSize: '11px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        alignSelf: 'flex-start',
+    },
+    cancelBtn: {
+        backgroundColor: 'transparent',
+        color: '#8B6A56',
+        border: '0.5px solid #D4B8A8',
+        borderRadius: '5px',
+        padding: '4px 12px',
+        fontSize: '11px',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
     },
 };
 
