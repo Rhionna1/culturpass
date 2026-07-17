@@ -74,4 +74,17 @@ public class CategoryController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // PUT /api/categories/{id}/restore-as-temporary — restore a deleted category as temporary
+    @PutMapping("/{id}/restore-as-temporary")
+    public ResponseEntity<Category> restoreAsTemporary(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, String> body) {
+        try {
+            java.time.LocalDateTime expiresAt = java.time.LocalDateTime.parse(body.get("expiresAt"));
+            return ResponseEntity.ok(categoryService.restoreAsTemporary(id, expiresAt));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
