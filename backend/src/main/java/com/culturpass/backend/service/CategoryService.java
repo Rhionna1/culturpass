@@ -91,11 +91,23 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    // Restore a soft-deleted category — admin only
+    // Restore a soft-deleted category as permanent — admin only
     public Category restoreCategory(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
         category.setDeleted(false);
+        category.setIsTemporary(false);
+        category.setExpiresAt(null);
+        return categoryRepository.save(category);
+    }
+
+    // Restore a soft-deleted category as temporary with a new expiration date — admin only
+    public Category restoreAsTemporary(Long id, java.time.LocalDateTime expiresAt) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        category.setDeleted(false);
+        category.setIsTemporary(true);
+        category.setExpiresAt(expiresAt);
         return categoryRepository.save(category);
     }
 }
