@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCategories, getDeletedCategories, addCategory, deleteCategory, restoreCategory } from '../services/api.js';
+import { getCategories, getDeletedCategories, addCategory, deleteCategory, restoreCategory, restoreAsTemporary } from '../services/api.js';
 
 // CategoryManager — admin component for managing event categories dynamically
 const CategoryManager = () => {
@@ -14,9 +14,14 @@ const CategoryManager = () => {
     const [isTemporary, setIsTemporary] = useState(false);
     const [expiresAt, setExpiresAt] = useState('');
 
-    // Confirmation state — tracks how many times admin has confirmed a delete
+    // Confirmation state — tracks how many times admin has confirmed to delete
     const [confirmingDelete, setConfirmingDelete] = useState(null);
     const [confirmCount, setConfirmCount] = useState(0);
+
+    // State for inline restore form — tracks which category is being restored
+    const [restoringId, setRestoringId] = useState(null);
+    const [restoreAsTemp, setRestoreAsTemp] = useState(false);
+    const [restoreExpiresAt, setRestoreExpiresAt] = useState('');
 
     useEffect(() => {
         fetchCategories();
