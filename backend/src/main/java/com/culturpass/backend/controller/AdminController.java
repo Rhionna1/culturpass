@@ -15,6 +15,8 @@ import java.util.UUID;
 public class AdminController {
 
     private final EventService eventService;
+    private final com.culturpass.backend.repository.EventRepository eventRepository;
+    private final com.culturpass.backend.repository.UserRepository userRepository;
 
     // GET /api/admin/events/pending — get all events awaiting approval
     @GetMapping("/events/pending")
@@ -72,6 +74,24 @@ public class AdminController {
         try {
             eventService.deleteEvent(id);
             return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // PUT /api/admin/events/{id}/reassign-organizer — reassign event to a different user
+    // Used when a host creates an account after admin posted their event
+    @PutMapping("/events/{id}/reassign-organizer")
+    public ResponseEntity<?> reassignOrganizer(
+            @PathVariable UUID id,
+            @RequestBody java.util.Map<String, String> body) {
+        try {
+            UUID newOrganizerId = UUID.fromString(body.get("organizerId"));
+            Event event = eventRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+            userRepository.findById(newOrganizerId)
+                    .ifPresent(event::setOrganizer);
+            return ResponseEntity.ok(eventRepository.save(event));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
