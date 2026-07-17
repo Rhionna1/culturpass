@@ -108,7 +108,7 @@ const CategoryManager = () => {
         <div style={styles.container}>
             <p style={styles.sectionTitle}>Category Management</p>
 
-            {/* Add new category */}
+            {/* Add new category form */}
             <div style={styles.addRow}>
                 <input
                     style={styles.input}
@@ -121,6 +121,36 @@ const CategoryManager = () => {
                     + Add
                 </button>
             </div>
+
+            {/* Temporary category toggle */}
+            <div style={styles.tempToggleRow}>
+                <label style={styles.tempLabel}>Temporary/seasonal category?</label>
+                <button
+                    onClick={() => { setIsTemporary(!isTemporary); setExpiresAt(''); }}
+                    style={{
+                        ...styles.toggle,
+                        backgroundColor: isTemporary ? '#D85A30' : '#E8D5C8',
+                    }}
+                >
+                    <div style={{
+                        ...styles.toggleKnob,
+                        transform: isTemporary ? 'translateX(20px)' : 'translateX(0)',
+                    }} />
+                </button>
+            </div>
+
+            {/* Expiration date — only shows when temporary is toggled on */}
+            {isTemporary && (
+                <div style={styles.expiresRow}>
+                    <label style={styles.tempLabel}>Auto-deletes on:</label>
+                    <input
+                        style={styles.expiresInput}
+                        type="datetime-local"
+                        value={expiresAt}
+                        onChange={e => setExpiresAt(e.target.value)}
+                    />
+                </div>
+            )}
 
             {error && <p style={styles.error}>{error}</p>}
 
@@ -165,7 +195,15 @@ const CategoryManager = () => {
                 <div style={styles.list}>
                     {categories.map(cat => (
                         <div key={cat.id} style={styles.categoryRow}>
-                            <span style={styles.categoryName}>{cat.name}</span>
+                            <div style={styles.categoryNameRow}>
+                                <span style={styles.categoryName}>{cat.name}</span>
+                                {/* Show temp badge with expiration date for seasonal categories */}
+                                {cat.isTemporary && cat.expiresAt && (
+                                    <span style={styles.tempBadge}>
+                            ⏳ Expires {new Date(cat.expiresAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
+                                )}
+                            </div>
                             <button
                                 style={{
                                     ...styles.deleteBtn,
@@ -359,6 +397,69 @@ const styles = {
     empty: {
         fontSize: '12px',
         color: '#8B6A56',
+    },
+    tempToggleRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '10px',
+    },
+    tempLabel: {
+        fontSize: '12px',
+        fontWeight: '500',
+        color: '#6B4F3A',
+    },
+    toggle: {
+        width: '44px',
+        height: '24px',
+        borderRadius: '12px',
+        border: 'none',
+        cursor: 'pointer',
+        position: 'relative',
+        transition: 'background-color 0.2s',
+        padding: 0,
+        flexShrink: 0,
+    },
+    toggleKnob: {
+        position: 'absolute',
+        top: '3px',
+        left: '3px',
+        width: '18px',
+        height: '18px',
+        borderRadius: '50%',
+        backgroundColor: '#FFFFFF',
+        transition: 'transform 0.2s',
+    },
+    expiresRow: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        marginBottom: '12px',
+    },
+    expiresInput: {
+        flex: 1,
+        padding: '6px 10px',
+        fontSize: '12px',
+        color: '#3D2B1F',
+        backgroundColor: '#FFFFFF',
+        border: '0.5px solid #D4B8A8',
+        borderRadius: '6px',
+        outline: 'none',
+        fontFamily: 'inherit',
+    },
+    categoryNameRow: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '3px',
+    },
+    tempBadge: {
+        fontSize: '10px',
+        fontWeight: '500',
+        color: '#633806',
+        backgroundColor: '#FAEEDA',
+        padding: '2px 6px',
+        borderRadius: '4px',
+        width: 'fit-content',
     },
 };
 
