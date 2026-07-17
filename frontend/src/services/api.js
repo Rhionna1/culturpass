@@ -119,6 +119,15 @@ export const reviewComplaint = (id, adminNotes, reviewedBy) =>
 // Mark an event notification as read — called when user dismisses the banner
 export const markNotificationRead = (eventId) => api.put(`/events/${eventId}/mark-notification-read`);
 
+// ── Organizer reassignment calls ──────────────────────────
+
+// Search users by name or email — for admin organizer reassignment
+export const searchUsers = (query) => api.get(`/super-admin/users/search?query=${query}`);
+
+// Reassign event organizer to a different user — admin only
+export const reassignOrganizer = (eventId, organizerId) =>
+    api.put(`/admin/events/${eventId}/reassign-organizer`, { organizerId });
+
 // ── Health check ─────────────────────────────────────────
 
 export const checkHealth = () => api.get('/health');
