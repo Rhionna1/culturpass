@@ -29,12 +29,26 @@ public class CategoryController {
     }
 
     // POST /api/categories — add a new category (admin only)
+    // Supports optional isTemporary flag and expiresAt date for seasonal categories
     @PostMapping
-    public ResponseEntity<Category> addCategory(@RequestBody Map<String, String> body) {
+    public ResponseEntity<Category> addCategory(@RequestBody Map<String, Object> body) {
         try {
-            return ResponseEntity.ok(categoryService.addCategory(body.get("name")));
+            String name = body.get("name") != null ? body.get("name").toString() : null;
+
+            // Parse optional temporary flag
+            Boolean isTemporary = body.get("isTemporary") != null
+                    ? Boolean.valueOf(body.get("isTemporary").toString())
+                    : false;
+
+            // Parse optional expiration date
+            java.time.LocalDateTime expiresAt = null;
+            if (body.get("expiresAt") != null && !body.get("expiresAt").toString().isEmpty()) {
+                expiresAt = java.time.LocalDateTime.parse(body.get("expiresAt").toString());
+            }
+
+            return ResponseEntity.ok(categoryService.addCategory(name, isTemporary, expiresAt));
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
