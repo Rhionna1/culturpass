@@ -100,4 +100,13 @@ public class SuperAdminController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // GET /api/super-admin/users/search?query=... — search users by name or email
+    // Used by admin when reassigning event organizer
+    @GetMapping("/users/search")
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String query) {
+        return ResponseEntity.ok(
+                userRepository.findByDisplayNameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query)
+        );
+    }
 }
