@@ -421,17 +421,18 @@ const styles = {
         fontFamily: 'inherit',
     },
     list: {
-        display: 'flex',
-        flexDirection: 'column',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '6px',
     },
     categoryRow: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '8px 12px',
+        padding: '6px 10px',
         backgroundColor: '#F5EBE0',
         borderRadius: '6px',
+        gap: '8px',
     },
     categoryName: {
         fontSize: '13px',
